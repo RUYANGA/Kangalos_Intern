@@ -62,8 +62,8 @@ model User {
   email String @unique
   reg_no Int @unique
   password String
-  role Roles
-  roleInTeam RoleTeam
+  role ROLES @default(STUDENT)
+  roleInTeam ROLETEAM @default(MEMBER)
   programId String
   programs Programs @relation(fields: [programId],references: [id])
   projectTeam ProjectTeam?
@@ -72,14 +72,14 @@ model User {
 
 }
 
-enum Roles {
+enum ROLES {
   STUDENT
   SUPERVISOR
   HOD
 
 }
 
-enum RoleTeam{
+enum ROLETEAM{
   MEMBER
   TEAM_LEADER
   SUPERVISOR
@@ -98,7 +98,7 @@ model Projects{
   id String @id @default(uuid())
   title String
   descriptions String
-  status ProjectStatus
+  status PROJECTSTATUS @default(NOTSUBMITED)
   teamId String
   team  ProjectTeam @relation(fields: [teamId],references: [id])
   createdAt DateTime @default(now())
@@ -106,7 +106,8 @@ model Projects{
 
 }
 
-enum ProjectStatus{
+enum PROJECTSTATUS{
+  NOTSUBMITED
   PEDING
   REJECTED
   INPROGRESS
