@@ -72,19 +72,6 @@ model User {
 
 }
 
-enum ROLES {
-  STUDENT
-  SUPERVISOR
-  HOD
-
-}
-
-enum ROLETEAM{
-  MEMBER
-  TEAM_LEADER
-  SUPERVISOR
-}
-
 model ProjectTeam{
   id String @id @default(uuid())
   studentsId String @unique
@@ -111,4 +98,16 @@ enum PROJECTSTATUS{
   PEDING
   REJECTED
   INPROGRESS
+}
+enum ROLES {
+  STUDENT
+  SUPERVISOR
+  HOD
+
+}
+
+enum ROLETEAM{
+  MEMBER
+  TEAM_LEADER
+  SUPERVISOR
 }
