@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
  // output   = "../src/generated/prisma"
@@ -15,3 +9,105 @@ datasource db {
 }
 
 
+model UniversityOfRwanda{
+  id String @id @default(uuid())
+  colleges Colleges []
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Colleges {
+  id String @id @default(uuid())
+  name String
+  universityId String
+  university UniversityOfRwanda @relation(fields: [universityId],references: [id])
+  schools Schools[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Schools {
+  id String @id @default(uuid())
+  name String
+  collegeId String
+  college Colleges @relation(fields: [collegeId],references: [id])
+  departments Departments []
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Departments{
+  id String @id @default(uuid())
+  dpt_name String
+  schoolId String
+  schools Schools @relation(fields: [schoolId],references: [id])
+  programs Programs[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Programs {
+  id String @id @default(uuid())
+  name String
+  departmentId String
+  departments Departments @relation(fields: [departmentId],references: [id])
+  students User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  reg_no Int @unique
+  password String
+  role Roles
+  roleInTeam RoleTeam
+  programId String
+  programs Programs @relation(fields: [programId],references: [id])
+  projectTeam ProjectTeam?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+enum Roles {
+  STUDENT
+  SUPERVISOR
+  HOD
+
+}
+
+enum RoleTeam{
+  MEMBER
+  TEAM_LEADER
+  SUPERVISOR
+}
+
+model ProjectTeam{
+  id String @id @default(uuid())
+  studentsId String @unique
+  students User @relation(fields: [studentsId],references: [id])
+  projects Projects[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Projects{
+  id String @id @default(uuid())
+  title String
+  descriptions String
+  status ProjectStatus
+  teamId String
+  team  ProjectTeam @relation(fields: [teamId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+enum ProjectStatus{
+  PEDING
+  REJECTED
+  INPROGRESS
+}
