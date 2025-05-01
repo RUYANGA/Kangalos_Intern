@@ -55,7 +55,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
 };
 
 
-export async function resendOtp(req:Request,res:Response,next:NextFunction){
+export async function resendOtp(req:Request,res:Response,next:NextFunction):Promise<any>{
    try {
 
         interface resendInput{
@@ -74,7 +74,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction){
 
         sendEmail(otp,email,user?.name)
         
-        res.status(200).json({Message:'Email verification successfuly, now you can login!'})
+        res.status(200).json({Message:'Email resend successfuly, check on your email!'})
 
    } catch (error) {
         console.log(error)
