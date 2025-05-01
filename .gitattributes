@@ -3,3 +3,4 @@ dist/* linguist-vendored
 build/* linguist-vendored
 *.js linguist-generated
 *.d.ts linguist-generated
+src/generated/prisma/* linguist-generated
