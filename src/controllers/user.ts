@@ -82,7 +82,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
    }
 };
 
-export async function verifyOtp(req:Request,res:Response,next:NextFunction){
+export async function verifyOtp(req:Request,res:Response,next:NextFunction):Promise<any>{
    try {
 
         interface VetifyInput{
