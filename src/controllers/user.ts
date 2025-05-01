@@ -110,9 +110,13 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
         if(!foundOtp)return res.status(404).json('Otp not found')
 
         if(foundOtp?.otp !== otp){
-            return res.status(400).json({Error:'Invalid Otp'})
+
+            return res.status(401).json({Error:'Invalid Otp'})
+
         }else if(foundOtp.expiredDate < new Date()){
-            return res.status(404).json('Otp xpired date')
+
+            return res.status(404).json('Otp expired date')
+
         }
 
         await prisma.user.update({

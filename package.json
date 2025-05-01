@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devi": "tsx watch src/main.ts",
+    "start": "tsx watch src/main.ts",
     "dev": "prisma generate && tsx watch src/main.ts"
   },
   "repository": {
