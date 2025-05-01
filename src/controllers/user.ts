@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
+import {sendEmail} from'../util/nodemailer'
 
 
 const prisma=new PrismaClient()
@@ -42,6 +43,8 @@ export async function Register(req:Request,res:Response,next:NextFunction){
         expiredOtp:expiredOtp,
         user:user.id
     })
+
+    sendEmail(email,otp,user.id,)
 
     res.status(201).json({Message:'User registered'})
 }
