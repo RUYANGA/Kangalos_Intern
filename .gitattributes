@@ -1,0 +1,5 @@
+# Tell GitHub linguist to ignore build output
+dist/* linguist-vendored
+build/* linguist-vendored
+*.js linguist-generated
+*.d.ts linguist-generated
