@@ -56,21 +56,28 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
 
 
 export async function resendOtp(req:Request,res:Response,next:NextFunction){
-    interface resendInput{
-        email:string
-    }
-    const {email}=req.body
+   try {
 
-    const user =await prisma.user.findUnique({
-        where:{email:email}
-    })
+        interface resendInput{
+            email:string
+        }
+        const {email}:resendInput=req.body
 
-    if(!user)return res.status(404).json({Error:'User not found'})
+        const user =await prisma.user.findUnique({
+            where:{email:email}
+        })
 
-    const otp:string= await crypto.randomInt(111111,999999).toString();
-    const expiredOtp:Date=addMinutes(new Date(),15);
+        if(!user)return res.status(404).json({Error:'User not found'})
 
-    sendEmail(otp,email,user?.name)
-    
+        const otp:string= await crypto.randomInt(111111,999999).toString();
+        const expiredOtp:Date=addMinutes(new Date(),15);
 
+        sendEmail(otp,email,user?.name)
+        
+        res.status(200).json({Message:'Email verification successfuly, now you can login!'})
+
+   } catch (error) {
+        console.log(error)
+        return res.status(500).json({Error:'Error to resend otp '})
+   }
 }
