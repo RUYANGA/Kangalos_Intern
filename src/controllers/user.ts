@@ -9,7 +9,7 @@ import {sendEmail} from'../util/nodemailer'
 const prisma=new PrismaClient()
 
 
-export async function Register(req:Request,res:Response,next:NextFunction){
+export async function Register(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     interface userInput{
         email:string,

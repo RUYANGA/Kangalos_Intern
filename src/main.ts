@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import express from "express";
+import userRoutes from '../src/routes/UserRoutes'
 
 
 const port=2000
@@ -11,6 +12,10 @@ const port=2000
 const app=express()
 
 app.use(express.json())
+
+
+
+app.use(userRoutes)
 
 
 
