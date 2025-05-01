@@ -72,6 +72,14 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp:Date=addMinutes(new Date(),15);
 
+        await prisma.otp.update({
+            where:{userId:user.id},
+            data:{
+                otp:otp,
+                expiredDate:expiredOtp
+            }
+        })
+
         sendEmail(email,otp,user.name,)
         
         res.status(200).json({Message:'Email resend successfuly, check on your email!'})
@@ -99,8 +107,12 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
             where:{userId:user?.id}
         });
 
-        if(foundOtp?.otp !== otp || foundOtp.expiredDate < new Date){
-            return res.status(400).json({Error:'Invalid or expired otp'})
+        if(!foundOtp)return res.status(404).json('Otp not found')
+
+        if(foundOtp?.otp !== otp){
+            return res.status(400).json({Error:'Invalid Otp'})
+        }else if(foundOtp.expiredDate < new Date()){
+            return res.status(404).json('Otp xpired date')
         }
 
         await prisma.user.update({
