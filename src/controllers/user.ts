@@ -72,7 +72,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp:Date=addMinutes(new Date(),15);
 
-        sendEmail(otp,email,user?.name)
+        sendEmail(email,otp,user.name,)
         
         res.status(200).json({Message:'Email resend successfuly, check on your email!'})
 
@@ -80,4 +80,45 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
         console.log(error)
         return res.status(500).json({Error:'Error to resend otp '})
    }
+};
+
+export async function verifyOtp(req:Request,res:Response,next:NextFunction){
+   try {
+
+        interface VetifyInput{
+            email:string,
+            otp:string
+        }
+        const {email,otp}:VetifyInput=req.body;
+
+        const user=await prisma.user.findUnique({
+            where:{email:email}
+        })
+
+        const foundOtp=await prisma.otp.findUnique({
+            where:{userId:user?.id}
+        });
+
+        if(foundOtp?.otp !== otp || foundOtp.expiredDate < new Date){
+            return res.status(400).json({Error:'Invalid or expired otp'})
+        }
+
+        await prisma.user.update({
+            where:{id:user?.id},
+            data:{
+                status:'ACTIVE'
+            }
+        });
+
+        await prisma.otp.delete({
+            where:{userId:user?.id}
+        });
+
+        res.status(200).json({Message:'Email verify successfuly, now you can login'});
+
+   } catch (error) {
+        console.log(error)
+        return res.status(500).json({Error:'Error to verify otp '})
+   }
+
 }

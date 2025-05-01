@@ -35,4 +35,26 @@ export const RegisterValidation=[
     .isNumeric()
     .withMessage('Reg number must be a numbers')
     
+];
+
+
+export const resendOtpValidation=[
+    body('email')
+    .notEmpty()
+    .withMessage('Email required!')
+    .normalizeEmail()
+    .custom((value,{req})=>{
+        return prisma.user.findUnique({
+            where:{email:value}
+        })
+        .then(user=>{
+            if(user?.status ==='ACTIVE'){
+                return Promise.reject(
+                    'User with email already verified, you can login!'
+                )
+            }else if(!user){
+                return Promise.reject('User with email not found')
+            }
+        })
+    })
 ]
