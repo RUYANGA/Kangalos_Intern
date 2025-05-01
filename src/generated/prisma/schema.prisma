@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UniversityOfRwanda {
+  id        String    @id @default(uuid())
+  college   College[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model College {
+  id           String             @id @default(uuid())
+  name         String             @unique
+  universityId String
+  university   UniversityOfRwanda @relation(fields: [universityId], references: [id])
+  school       School[]
+  dean         String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model School {
+  id         String        @id @default(uuid())
+  name       String        @unique
+  collegeId  String
+  college    College       @relation(fields: [collegeId], references: [id])
+  department Departments[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Departments {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  schoolId  String
+  school    School    @relation(fields: [schoolId], references: [id])
+  programs  Program[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Program {
+  id           String      @id @default(uuid())
+  name         String
+  departmentId String
+  department   Departments @relation(fields: [departmentId], references: [id])
+  students     User[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  reg_no      Int          @unique
+  gender      String
+  password    String
+  role        ROLES        @default(STUDENT)
+  otp         Otp?
+  status      STATUS       @default(INACTIVE)
+  roleInTeam  ROLETEAM     @default(MEMBER)
+  programId   String?
+  program     Program?     @relation(fields: [programId], references: [id])
+  projectTeam ProjectTeam?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Otp {
+  id          String   @id @default(uuid())
+  otp         String
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  expiredDate DateTime
+}
+
+model ProjectTeam {
+  id        String    @id @default(uuid())
+  studentId String    @unique
+  student   User      @relation(fields: [studentId], references: [id])
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  title        String
+  descriptions String
+  status       PROJECTSTATUS @default(NOT_SUBMITTED)
+  teamId       String
+  team         ProjectTeam   @relation(fields: [teamId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
+}
+
+enum PROJECTSTATUS {
+  NOT_SUBMITTED
+  PENDING
+  REJECTED
+  IN_PROGRESS
+}
+
+enum ROLES {
+  ADMIN
+  STUDENT
+  SUPERVISOR
+  HOD
+}
+
+enum ROLETEAM {
+  MEMBER
+  TEAM_LEADER
+  SUPERVISOR
+}

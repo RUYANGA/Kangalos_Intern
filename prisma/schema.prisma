@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
- // output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -49,7 +49,7 @@ model Departments{
   id String @id @default(uuid())
   name String @unique
   schoolId String
-  schools School @relation(fields: [schoolId],references: [id])
+  school School @relation(fields: [schoolId],references: [id])
   programs Program[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,7 +61,7 @@ model Program {
   id String @id @default(uuid())
   name String
   departmentId String
-  departments Departments @relation(fields: [departmentId],references: [id])
+  department Departments @relation(fields: [departmentId],references: [id])
   students User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,8 +80,8 @@ model User {
   otp Otp?
   status STATUS @default(INACTIVE)
   roleInTeam ROLETEAM @default(MEMBER)
-  programId String
-  program Program @relation(fields: [programId],references: [id])
+  programId String?
+  program Program? @relation(fields: [programId],references: [id])
   projectTeam ProjectTeam?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,7 +104,7 @@ model ProjectTeam{
   id String @id @default(uuid())
   studentId String @unique
   student User @relation(fields: [studentId],references: [id])
-  project Project[]
+  projects Project[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
