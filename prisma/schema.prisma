@@ -10,43 +10,54 @@ datasource db {
 
 
 model UniversityOfRwanda{
+
   id String @id @default(uuid())
-  colleges Colleges []
+  college College[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
-model Colleges {
+model College{
+
   id String @id @default(uuid())
-  name String
+  name String @unique
   universityId String
   university UniversityOfRwanda @relation(fields: [universityId],references: [id])
-  schools Schools[]
+  school School[]
+  dean String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
-model Schools {
+model School {
+
   id String @id @default(uuid())
-  name String
+  name String @unique
   collegeId String
-  college Colleges @relation(fields: [collegeId],references: [id])
-  departments Departments []
+  college College @relation(fields: [collegeId], references: [id])
+  department Departments[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
+
 
 model Departments{
+
   id String @id @default(uuid())
-  dpt_name String
+  name String @unique
   schoolId String
-  schools Schools @relation(fields: [schoolId],references: [id])
-  programs Programs[]
+  schools School @relation(fields: [schoolId],references: [id])
+  programs Program[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
-model Programs {
+model Program {
+
   id String @id @default(uuid())
   name String
   departmentId String
@@ -54,38 +65,56 @@ model Programs {
   students User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 model User {
+
   id String @id @default(uuid())
   name String
   email String @unique
   reg_no Int @unique
+  gender String
   password String
   role ROLES @default(STUDENT)
+  otp Otp?
+  status STATUS @default(INACTIVE)
   roleInTeam ROLETEAM @default(MEMBER)
   programId String
-  programs Programs @relation(fields: [programId],references: [id])
+  program Program @relation(fields: [programId],references: [id])
   projectTeam ProjectTeam?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
 }
 
-model ProjectTeam{
+model Otp{
+
   id String @id @default(uuid())
-  studentsId String @unique
-  students User @relation(fields: [studentsId],references: [id])
-  projects Projects[]
+  otp String 
+  userId String @unique
+  user User @relation(fields: [userId],references: [id])
+  createdAt DateTime @default(now())
+  expiredDate DateTime
+
+}
+
+model ProjectTeam{
+
+  id String @id @default(uuid())
+  studentId String @unique
+  student User @relation(fields: [studentId],references: [id])
+  project Project[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Projects{
+model Project{
+  
   id String @id @default(uuid())
   title String
   descriptions String
-  status PROJECTSTATUS @default(NOTSUBMITED)
+  status PROJECTSTATUS @default(NOT_SUBMITTED)
   teamId String
   team  ProjectTeam @relation(fields: [teamId],references: [id])
   createdAt DateTime @default(now())
@@ -93,13 +122,23 @@ model Projects{
 
 }
 
-enum PROJECTSTATUS{
-  NOTSUBMITED
-  PEDING
-  REJECTED
-  INPROGRESS
+enum STATUS{
+  ACTIVE
+  INACTIVE
 }
+
+enum PROJECTSTATUS{
+
+  NOT_SUBMITTED
+  PENDING
+  REJECTED
+  IN_PROGRESS
+
+}
+
 enum ROLES {
+
+  ADMIN
   STUDENT
   SUPERVISOR
   HOD
@@ -107,7 +146,9 @@ enum ROLES {
 }
 
 enum ROLETEAM{
+
   MEMBER
   TEAM_LEADER
   SUPERVISOR
+
 }
