@@ -10,8 +10,11 @@ interface JwtPayloadWithId extends jwt.JwtPayload {
 }
 
 export const AuthorizeRoles = (allowedRoles:string[]) => {
+
   return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+
     try {
+
       const authHeader = req.headers['authorization'];
       const token = authHeader?.split(' ')[1];
 
@@ -44,8 +47,11 @@ export const AuthorizeRoles = (allowedRoles:string[]) => {
 
 
 export const AuthorizeTeam= (allowedRoles:string[]) => {
+
     return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+
       try {
+        
         const authHeader = req.headers['authorization'];
         const token = authHeader?.split(' ')[1];
   

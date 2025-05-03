@@ -164,7 +164,7 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
         if(!user) return
 
         if(!await bcrypt.compare(password,user?.password)){
-
+            return res.status(404).json({Error:"Email or password is incorrect!"});
         }
 
         const token =jwt.sign(
