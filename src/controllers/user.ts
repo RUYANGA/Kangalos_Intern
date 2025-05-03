@@ -147,7 +147,7 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
 }
 
 
-export async function Login(req:Request,res:Response,next:NextFunction){
+export async function Login(req:Request,res:Response,next:NextFunction):Promise<any>{
 
    try {
         interface LoginInput{
@@ -178,7 +178,9 @@ export async function Login(req:Request,res:Response,next:NextFunction){
             {
                 expiresIn:'30day'
             }
-        )
+        );
+
+        res.status(200).json({Message:'Login successfuly',token:token})
 
         
    } catch (error) {
