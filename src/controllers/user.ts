@@ -223,8 +223,8 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
 
    } catch (error) {
 
-        console.log(error)
-        return res.status(500).json({Error:'Error to login, try again '})
+        //console.log(error)
+        return res.status(500).json({Error:'Error to reset password'})
    }
 };
 
@@ -253,7 +253,7 @@ export async function resetPassword(req:Request,res:Response,next:NextFunction):
         res.status(200).json({Message:"Reset password successfuly !"});
 
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         return res.status(500).json({Error:'Token is expired or invalid !'});
         
     }
