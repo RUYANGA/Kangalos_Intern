@@ -19,7 +19,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
             name:string,
             password:string,
             gender:string,
-            reg_no:number
+            reg_no:string
         }
     
         const{name,email,reg_no,gender,password}:UserInput=req.body;
@@ -33,7 +33,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
             data:{
                 name,
                 email,
-                reg_no,
+                reg_no:parseInt(reg_no),
                 password:hashPassword,
                 gender,
             }
@@ -190,7 +190,7 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
 
 };
 
-export async function forgetPassword(req:Request,res:Response,next:NextFunction){
+export async function forgetPassword(req:Request,res:Response,next:NextFunction):Promise<any>{
 
    try {
 
@@ -198,13 +198,13 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
         email:string
     };
 
-    const {email}:FogetEmail=req.body;
+    const {email}=req.body;
 
     const user=await prisma.user.findUnique({
         where:{email:email}
     });
 
-    if(!user)return 
+    if(!user)return res.status(404).json({Error:'Email or password incorrect'})
 
     const token=jwt.sign(
         {
@@ -219,8 +219,10 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
 
     forgetPassword1(user.email,token,user?.name);
 
+    res.status(200).json({Message:`Rest password link sent to ${email}`})
+
    } catch (error) {
-    
+
         console.log(error)
         return res.status(500).json({Error:'Error to login, try again '})
    }

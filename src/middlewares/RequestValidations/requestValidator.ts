@@ -121,8 +121,6 @@ export const fogetPasswordValdation=[
     body('email')
     .notEmpty()
     .withMessage('Email required')
-    .normalizeEmail()
-    .escape()
     .custom((value,{req})=>{
         return prisma.user.findUnique({
             where:{email:value}
@@ -130,10 +128,10 @@ export const fogetPasswordValdation=[
         .then(user=>{
             if(!user){
                 return Promise.reject(
-                    'User not found!'
+                    'Email or password incorrect!'
                 )
             }
         })
-    })
+    }),
     
 ]
