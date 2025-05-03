@@ -155,10 +155,17 @@ export async function Login(req:Request,res:Response,next:NextFunction){
 
         const{email,password}:LoginInput=req.body;
 
+        const user=await prisma.user.findUnique({
+            where:{email:email}
+        })
+
         
    } catch (error) {
        console.log(error)
        return res.status(500).json({Error:'Error to login, try again '})
    }
 
-}
+};
+
+
+
