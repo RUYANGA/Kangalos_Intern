@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-const JWT_KEY = process.env.JWT_KEY || 'mydefaultkeyisruyanga';
+const JWT_KEY=process.env.JWT_KEY as string
 const prisma = new PrismaClient();
 
 interface JwtPayloadWithId extends jwt.JwtPayload {
@@ -37,9 +37,10 @@ export const AuthorizeRoles = (allowedRoles:string[]) => {
       (req as any).user = decoded.id;
 
       next();
+      
     } catch (err) {
-      console.error(err);
-      return res.status(401).json({ message: 'Invalid or expired token' });
+      console.log(err);
+      //return res.status(401).json({ message: 'Invalid or expired token' });
     }
   };
 }; 

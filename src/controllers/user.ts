@@ -233,7 +233,7 @@ export async function resetPassword(req:Request,res:Response,next:NextFunction):
         interface Password{
             password:string
         }
-        const{password}:Password=req.body;
+        const{password}=req.body;
 
         const authHeader=req.headers['authorization'];
         const token=authHeader?.split(" ")[1];
