@@ -226,5 +226,32 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
         console.log(error)
         return res.status(500).json({Error:'Error to login, try again '})
    }
+};
+
+export async function resetPassword(req:Request,res:Response,next:NextFunction){
+    try {
+        const{password}=req.body;
+
+        const authHeader=req.headers['authorization'];
+        const token=authHeader?.split(" ")[1];
+
+        if(!token)return res.status(400).json({Message:'Token not provided'});
+
+        const hashPassword=await bcrypt.hash(password,12)
+
+        const decoded=jwt.verify(token,JWT_KEY) as {userId:string};
+
+        await prisma.user.update({
+            where:{id:decoded.userId},
+            data:{password:hashPassword}
+        });
+
+        res.status(200).json({Message:"Reset password successfuly !"})
+
+    } catch (err) {
+
+        return res.status(500).json({Error:'Token is expired or invalid !'})
+        
+    }
 }
 
