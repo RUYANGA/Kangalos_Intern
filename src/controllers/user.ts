@@ -230,7 +230,10 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
 
 export async function resetPassword(req:Request,res:Response,next:NextFunction):Promise<any>{
     try {
-        const{password}=req.body;
+        interface Password{
+            password:string
+        }
+        const{password}:Password=req.body;
 
         const authHeader=req.headers['authorization'];
         const token=authHeader?.split(" ")[1];
