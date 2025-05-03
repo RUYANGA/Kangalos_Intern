@@ -10,7 +10,7 @@ router.post('/user/register',RegisterValidation,validateRequest,Register);
 router.post('/user/resendOtp',resendOtpValidation,validateRequest,resendOtp);
 router.post('/user/verifyOtp',verifyOtpValidation,validateRequest,verifyOtp);
 router.post('/user/login',LoginValidation,validateRequest,Login);
-router.post('/user/forgetpassword',fogetPasswordValdation,validateRequest,forgetPassword)
+router.post('/user/forget-password',fogetPasswordValdation,validateRequest,forgetPassword)
 
 
 export default router
