@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
-import {sendEmail} from'../util/nodemailer'
+import {sendEmail,forgetPassword1} from'../util/nodemailer'
 import jwt from 'jsonwebtoken'
 
 
@@ -190,5 +190,39 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
 
 };
 
+export async function forgetPassword(req:Request,res:Response,next:NextFunction){
 
+   try {
+
+    interface FogetEmail{
+        email:string
+    };
+
+    const {email}:FogetEmail=req.body;
+
+    const user=await prisma.user.findUnique({
+        where:{email:email}
+    });
+
+    if(!user)return 
+
+    const token=jwt.sign(
+        {
+            id:user?.id,
+            email:user?.email
+        },
+        JWT_KEY,
+        {
+            expiresIn:"30day"
+        }
+    )
+
+    forgetPassword1(user.email,token,user?.name);
+
+   } catch (error) {
+    
+        console.log(error)
+        return res.status(500).json({Error:'Error to login, try again '})
+   }
+}
 
