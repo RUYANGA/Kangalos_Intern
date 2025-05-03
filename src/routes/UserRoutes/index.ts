@@ -12,7 +12,7 @@ router.post('/user/resendOtp',resendOtpValidation,validateRequest,resendOtp);
 router.post('/user/verifyOtp',verifyOtpValidation,validateRequest,verifyOtp);
 router.post('/user/login',LoginValidation,validateRequest,Login);
 router.post('/user/forget-password',fogetPasswordValdation,validateRequest,forgetPassword);
-router.post('/user/rest-password',AuthorizeRoles(['STUDENT','ADMIN','SUPERSIOR','HOD']),resetPassword)
+router.post('/user/rest-password',resetPassword)
 
 
 export default router

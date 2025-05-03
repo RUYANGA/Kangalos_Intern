@@ -4,11 +4,12 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
 import {sendEmail,forgetPassword1} from'../util/nodemailer'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 
 const prisma=new PrismaClient()
-const JWT_KEY=process.env.JWT_KEY as string
+const JWT_KEY=process.env.JWTKEY || 'jkdsdfguyi90uy7tryfdfchvbhjuhigy' as string
+const tokenkey=process.env.TOKEN_KEY || 'oiuytrdfghjkopiuygyf' as string;
 
 
 export async function Register(req:Request,res:Response,next:NextFunction):Promise<any>{
@@ -204,14 +205,13 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
         where:{email:email}
     });
 
-    if(!user)return res.status(404).json({Error:'Email or password incorrect'})
+    if(!user)return res.status(404).json({Error:'User with email not found'})
 
     const token=jwt.sign(
         {
-            id:user?.id,
-            email:user?.email
+            id:user.id
         },
-        JWT_KEY,
+        tokenkey,
         {
             expiresIn:"30day"
         }
@@ -219,7 +219,7 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
 
     forgetPassword1(user.email,token,user?.name);
 
-    res.status(200).json({Message:`Rest password link sent to ${email}`})
+    res.status(200).json({Message:`Rest password link sent to ${email}`,token:token})
 
    } catch (error) {
 
@@ -229,31 +229,32 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
 };
 
 export async function resetPassword(req:Request,res:Response,next:NextFunction):Promise<any>{
+
     try {
         interface Password{
             password:string
-        }
-        const{password}=req.body;
+        };
+        const{password}:Password=req.body;
 
         const authHeader=req.headers['authorization'];
         const token=authHeader?.split(" ")[1];
 
         if(!token)return res.status(400).json({Message:'Token not provided'});
 
-        const hashPassword=await bcrypt.hash(password,12)
+        const hashPassword=await bcrypt.hash(password,12);
 
-        const decoded=jwt.verify(token,JWT_KEY) as {userId:string};
+        const decoded=jwt.verify(token,tokenkey) as {id:string} ;
 
         await prisma.user.update({
-            where:{id:decoded.userId},
+            where:{id:decoded?.id},
             data:{password:hashPassword}
         });
 
-        res.status(200).json({Message:"Reset password successfuly !"})
+        res.status(200).json({Message:"Reset password successfuly !"});
 
     } catch (err) {
-
-        return res.status(500).json({Error:'Token is expired or invalid !'})
+        console.log(err)
+        return res.status(500).json({Error:'Token is expired or invalid !'});
         
     }
 }
