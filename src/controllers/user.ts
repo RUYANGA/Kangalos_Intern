@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken'
 
 
 const prisma=new PrismaClient()
+const JWT_KEY=process.env.JWT_KEY as string
 
 
 export async function Register(req:Request,res:Response,next:NextFunction):Promise<any>{
@@ -160,6 +161,12 @@ export async function Login(req:Request,res:Response,next:NextFunction){
             where:{email:email}
         })
 
+        if(!user) return
+
+        if(!await bcrypt.compare(password,user?.password)){
+
+        }
+
         const token =jwt.sign(
             {
                 id:user?.id,
@@ -167,7 +174,7 @@ export async function Login(req:Request,res:Response,next:NextFunction){
                 roleinTeam:user?.roleInTeam,
                 email:user?.email
             },
-            '[poipoiujh',
+               JWT_KEY,
             {
                 expiresIn:'30day'
             }
