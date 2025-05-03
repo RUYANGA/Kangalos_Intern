@@ -113,5 +113,6 @@ export const LoginValidation=[
     body('password')
     .notEmpty()
     .withMessage('Password required')
+    .escape()
 
 ]

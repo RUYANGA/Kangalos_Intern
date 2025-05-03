@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
 import {sendEmail} from'../util/nodemailer'
+import jwt from 'jsonwebtoken'
 
 
 const prisma=new PrismaClient()
@@ -158,6 +159,19 @@ export async function Login(req:Request,res:Response,next:NextFunction){
         const user=await prisma.user.findUnique({
             where:{email:email}
         })
+
+        const token =jwt.sign(
+            {
+                id:user?.id,
+                role:user?.role,
+                roleinTeam:user?.roleInTeam,
+                email:user?.email
+            },
+            '[poipoiujh',
+            {
+                expiresIn:'30day'
+            }
+        )
 
         
    } catch (error) {
