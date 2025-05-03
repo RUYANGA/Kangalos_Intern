@@ -43,6 +43,7 @@ export const resendOtpValidation=[
     .notEmpty()
     .withMessage('Email required!')
     .normalizeEmail()
+    .escape()
     .custom((value,{req})=>{
         return prisma.user.findUnique({
             where:{email:value}
@@ -77,6 +78,34 @@ export const verifyOtpValidation=[
             }else if(user.status ==='ACTIVE'){
                 return Promise.reject(
                     'Email already verified !'
+                )
+            }
+        })
+    }),
+    body('otp')
+    .notEmpty()
+    .withMessage('OTP required!')
+    .escape()
+];
+
+export const LoginValidation=[
+    body('email')
+    .notEmpty()
+    .withMessage('Email required!')
+    .escape()
+    .normalizeEmail()
+    .custom((value,{req})=>{
+        return prisma.user.findUnique({
+            where:{email:value}
+        })
+        .then(user=>{
+            if(!user){
+                return Promise.reject(
+                    'Email or password incorrect!'
+                )
+            }else if(user.status ==='INACTIVE'){
+                return Promise.reject(
+                    'Email is not verified, please verify your email!'
                 )
             }
         })

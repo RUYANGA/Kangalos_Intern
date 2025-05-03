@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
               <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
               <!-- Header -->
               <div style="background-color: #4A90E2; padding: 24px; text-align: center;">
-                  <h1 style="color: #ffffff; margin: 0; font-size: 26px;">Welcome to EASY SHOP</h1>
+                  <h1 style="color: #ffffff; margin: 0; font-size: 26px;">Welcome to Kangalos</h1>
               </div>
               
               <!-- Content -->

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import express from "express";
+import express ,{Request,Response,NextFunction} from "express";
 import userRoutes from '../src/routes/UserRoutes'
 
 
@@ -19,6 +19,11 @@ app.use(userRoutes)
 
 
 
+app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
+    res.status(500).json({Error: 'Something went wronge, Try again'})
+    console.log(error.message)
+    return
+})
 
 
 app.listen(port,()=>{
