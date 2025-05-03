@@ -54,7 +54,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
         
     } catch (error) {
 
-        console.log(error)
+        //console.log(error)
         return res.status(500).json({Error:'Error to register user '})
     }
 };
@@ -91,7 +91,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
 
    } catch (error) {
 
-        console.log(error)
+        //console.log(error)
         return res.status(500).json({Error:'Error to resend otp '})
    }
 };
@@ -141,7 +141,7 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
 
    } catch (error) {
     
-        console.log(error)
+        //console.log(error)
         return res.status(500).json({Error:'Error to verify otp '})
    }
 
@@ -185,7 +185,7 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
 
         
    } catch (error) {
-       console.log(error)
+       //console.log(error)
        return res.status(500).json({Error:'Error to login, try again '})
    }
 
