@@ -1,10 +1,11 @@
 import { Router } from "express";
 import {AddUniversity,updateUniversity,AddCollege} from '../../controllers/Users/AdminController/user'
+import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'
 
 const router=Router();
 
-router.post('/admin/university',AddUniversity);
-router.put('/admin/updateUniversity/:id',updateUniversity);
-router.post('/admin/university/:id/dean/:deanId',AddCollege)
+router.post('/admin/university',AuthorizeRoles(['ADMIN']),AddUniversity);
+router.put('/admin/updateUniversity/:id',AuthorizeRoles(['ADMIN']),updateUniversity);
+router.post('/admin/university/:id/dean/:deanId',AuthorizeRoles(['ADMIN']),AddCollege)
 
 export default router

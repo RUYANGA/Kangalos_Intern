@@ -86,5 +86,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
         console.log(error);
         return res.status(500).json({Error:"Error to add college"});
     }
-}
+};
+
+
 
