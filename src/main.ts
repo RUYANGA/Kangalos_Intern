@@ -3,6 +3,7 @@ dotenv.config()
 
 import express ,{Request,Response,NextFunction} from "express";
 import userRoutes from '../src/routes/UserRoutes'
+import adminRoutes from '../src/routes/AdminRouter/index'
 
 
 const port=2000
@@ -16,6 +17,7 @@ app.use(express.json())
 
 
 app.use(userRoutes)
+app.use(adminRoutes)
 
 
 

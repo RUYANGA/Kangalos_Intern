@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  //output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -12,6 +12,7 @@ datasource db {
 model UniversityOfRwanda{
 
   id String @id @default(uuid())
+  name String @default("University of Rwanda")
   college College[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
