@@ -53,7 +53,7 @@ export async function updateUniversity(req:Request,res:Response,next:NextFunctio
     }
 };
 
-export async function AddCollege(req:Request,res:Response,next:NextFunction){
+export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
     try {
 
         interface ColledeInput{
@@ -72,7 +72,11 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction){
                         id:universityId
                     }
                 },
-                dean:deanId
+                dean:{
+                    connect:{
+                        id:deanId
+                    }
+                }
             }
         })
 
