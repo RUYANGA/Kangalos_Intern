@@ -7,18 +7,18 @@ const prisma=new PrismaClient()
 export async function AddUniversity(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     try {
-        
+
         interface Name{
             name:string
         };
 
         const {name}:Name=req.body;
 
-        await prisma.universityOfRwanda.create({
+        const university =await prisma.universityOfRwanda.create({
             data:{name:name}
         });
 
-        res.status(200).json({Message:'University added'});
+        res.status(200).json({Message:'University added',University:university});
 
     } catch (error) {
 
@@ -39,12 +39,12 @@ export async function updateUniversity(req:Request,res:Response,next:NextFunctio
 
         const {name}:InputName=req.body;
 
-        await prisma.universityOfRwanda.update({
+        const university=await prisma.universityOfRwanda.update({
             where:{id:universityId},
             data:{name:name}
         });
 
-        res.status(200).json({Message:'University name updated!'});
+        res.status(200).json({Message:'University name updated!',University:university});
 
     } catch (error) {
 
@@ -52,4 +52,35 @@ export async function updateUniversity(req:Request,res:Response,next:NextFunctio
         return res.status(500).json({Error:"Error to update university"});
     }
 };
+
+export async function AddCollege(req:Request,res:Response,next:NextFunction){
+    try {
+
+        interface ColledeInput{
+            name:string
+        };
+
+        const deanId=req.params.deanId
+        const universityId=req.params.id;
+        const {name}:ColledeInput=req.body;
+
+        const college=await prisma.college.create({
+            data:{
+                name:name,
+                university:{
+                    connect:{
+                        id:universityId
+                    }
+                },
+                dean:deanId
+            }
+        })
+
+        res.status(201).json({Message:'College added',college:college})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({Error:"Error to add college"});
+    }
+}
 

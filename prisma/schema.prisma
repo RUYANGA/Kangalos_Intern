@@ -26,7 +26,8 @@ model College{
   universityId String
   university UniversityOfRwanda @relation(fields: [universityId],references: [id])
   school School[]
-  dean String
+  deanId String
+  dean User @relation(fields: [deanId],references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -84,6 +85,7 @@ model User {
   programId String?
   program Program? @relation(fields: [programId],references: [id])
   projectTeam ProjectTeam?
+  deanCollege College[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
