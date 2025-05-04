@@ -44,6 +44,7 @@ export async function updateUniversity(req:Request,res:Response,next:NextFunctio
             data:{name:name}
         });
 
+       
         res.status(200).json({Message:'University name updated!',University:university});
 
     } catch (error) {
