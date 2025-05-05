@@ -61,12 +61,13 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
             name:string
         };
 
-        const deanId=req.params.deanId
+        const deanId=req.params.deanId;
         const universityId=req.params.id;
         const {name}:ColledeInput=req.body;
 
         const college=await prisma.college.create({
             data:{
+
                 name:name,
                 university:{
                     connect:{
@@ -84,6 +85,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
         res.status(201).json({Message:'College added',college:college})
 
     } catch (error) {
+        
         console.log(error);
         return res.status(500).json({Error:"Error to add college"});
     }
