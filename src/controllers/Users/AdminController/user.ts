@@ -126,8 +126,14 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
     try {
         const id=req.params.id;
 
-        await prisma.college.delete({
+        const college=await prisma.college.findUnique({
             where:{id:id}
+        })
+
+        if(!college) return res.status(404).json({Error:'College to delete not found!'})
+
+        await prisma.college.delete({
+            where:{id:college.id}
         });
 
         res.status(200).json({Message:'College deleted'});
