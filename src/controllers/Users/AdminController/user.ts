@@ -124,6 +124,7 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
 export async function deleteCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     try {
+
         const id=req.params.id;
 
         const college=await prisma.college.findUnique({
@@ -143,7 +144,7 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
         console.log(error);
         return res.status(500).json({Error:"Error to delete college"});
     }
-}
+};
 
 
 
