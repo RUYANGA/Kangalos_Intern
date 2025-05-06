@@ -150,13 +150,19 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
 export async function addSchool (req:Request,res:Response,next:NextFunction):Promise<any>{
 
     try {
+
+        interface NameInput{
+            name:string
+        }
         
         const collegeId=req.params.id;
 
-        const {name}=req.body;
+        const {name}:NameInput=req.body;
 
     } catch (error) {
-        
+
+        console.log(error);
+        return res.status(500).json({Error:"Error to add school"});
     }
 
 }
