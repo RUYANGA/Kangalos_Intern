@@ -143,7 +143,7 @@ export const AddCollegeValidation=[
     .toUpperCase()
     .custom((value,{req})=>{
         return prisma.college.findUnique({
-            where:{id:value}
+            where:{name:value}
         })
         .then(college=>{
             if(college){
