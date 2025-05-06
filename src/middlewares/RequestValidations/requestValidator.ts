@@ -135,8 +135,22 @@ export const fogetPasswordValdation=[
     }),
 ];
 
-export const AddUniversity=[
+export const AddCollegeValidation=[
     body('name')
     .notEmpty()
     .withMessage('University required!')
+    .escape()
+    .toUpperCase()
+    .custom((value,{req})=>{
+        return prisma.college.findUnique({
+            where:{id:value}
+        })
+        .then(college=>{
+            if(college){
+                return Promise.reject(
+                    'College with this name existing'
+                )
+            }
+        })
+    })
 ]
