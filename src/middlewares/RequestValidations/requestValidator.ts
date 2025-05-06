@@ -133,5 +133,10 @@ export const fogetPasswordValdation=[
             }
         })
     }),
-    
+];
+
+export const AddUniversity=[
+    body('name')
+    .notEmpty()
+    .withMessage('University required!')
 ]
