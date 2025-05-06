@@ -124,6 +124,10 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
 export async function deleteCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     const id=req.params.id;
+
+    await prisma.college.delete({
+        where:{id:id}
+    })
 }
 
 
