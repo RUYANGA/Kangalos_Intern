@@ -99,7 +99,7 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
             deanId:string
         }
         const collegeId=req.params.id;
-        
+
         const{name,deanId}:InputCollege=req.body;
 
         const collegeUpdated=await prisma.college.update({
@@ -108,12 +108,17 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
                 name:name,
                 deanId:deanId
             }
-        })
+        });
+
+        res.status(200).json({Message:'College updated',college:collegeUpdated})
 
     } catch (error) {
+
          console.log(error);
         return res.status(500).json({Error:"Error to update college"});
     }
 
-}
+};
+
+
 
