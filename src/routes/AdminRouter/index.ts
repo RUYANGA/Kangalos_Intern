@@ -8,6 +8,6 @@ router.post('/admin/university',AuthorizeRoles(['ADMIN']),AddUniversity);
 router.put('/admin/updateUniversity/:id',AuthorizeRoles(['ADMIN']),updateUniversity);
 router.post('/admin/university/:id/dean/:deanId',AuthorizeRoles(['ADMIN']),AddCollege);
 router.put('/admin/college/:id/update',AuthorizeRoles(['ADMIN']),updateCollege);
-router.delete('/admin/delete/college/:id',deleteCollege)
+router.delete('/admin/delete/college/:id',AuthorizeRoles(['ADMIN']),deleteCollege)
 
 export default router
