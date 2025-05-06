@@ -93,17 +93,27 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 
 export async function updateCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-
-    const collegeId=req.params.id;
-    const{name,deanId}=req.body;
-
-    const collegeUpdated=await prisma.college.update({
-        where:{id:collegeId},
-        data:{
-            name:name,
-            deanId:deanId
+    try {
+        interface InputCollege{
+            name:string,
+            deanId:string
         }
-    })
+        const collegeId=req.params.id;
+        
+        const{name,deanId}:InputCollege=req.body;
+
+        const collegeUpdated=await prisma.college.update({
+            where:{id:collegeId},
+            data:{
+                name:name,
+                deanId:deanId
+            }
+        })
+
+    } catch (error) {
+         console.log(error);
+        return res.status(500).json({Error:"Error to update college"});
+    }
 
 }
 
