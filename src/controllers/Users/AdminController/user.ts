@@ -147,4 +147,17 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
 };
 
 
+export async function(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+        
+        
+
+    } catch (error) {
+        
+    }
+
+}
+
+
 
