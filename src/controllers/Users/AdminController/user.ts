@@ -114,7 +114,7 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
 
     } catch (error) {
 
-         console.log(error);
+        console.log(error);
         return res.status(500).json({Error:"Error to update college"});
     }
 
@@ -123,11 +123,20 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
 
 export async function deleteCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-    const id=req.params.id;
+    try {
+        const id=req.params.id;
 
-    await prisma.college.delete({
-        where:{id:id}
-    })
+        await prisma.college.delete({
+            where:{id:id}
+        });
+
+        res.status(200).json({Message:'College deleted'});
+
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({Error:"Error to delete college"});
+    }
 }
 
 
