@@ -147,11 +147,13 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
 };
 
 
-export async function(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function addSchool (req:Request,res:Response,next:NextFunction):Promise<any>{
 
     try {
         
-        
+        const collegeId=req.params.id;
+
+        const {name}=req.body;
 
     } catch (error) {
         
