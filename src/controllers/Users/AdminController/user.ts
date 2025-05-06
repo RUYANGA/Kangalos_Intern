@@ -76,7 +76,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
                 },
                 dean:{
                     connect:{
-                        id:deanId
+                        id:deanId,
                     }
                 }
             }
