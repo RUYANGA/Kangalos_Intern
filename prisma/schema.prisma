@@ -22,22 +22,22 @@ model College {
   universityId String
   university   UniversityOfRwanda @relation(fields: [universityId], references: [id])
   school       School[]
-  directorId      String?
-  director         User?               @relation("DirectorCollege", fields: [directorId], references: [id])
+  directorId   String?            @unique
+  director     User?              @relation("DirectorCollege", fields: [directorId], references: [id])
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 }
 
 model School {
-  id         String        @id @default(uuid())
-  name       String        @unique
+  id         String       @id @default(uuid())
+  name       String       @unique
   collegeId  String
-  college    College       @relation(fields: [collegeId], references: [id])
-  deanId       String?
-  dean         User?               @relation("DeanCollege", fields: [deanId], references: [id])
+  college    College      @relation(fields: [collegeId], references: [id])
+  deanId     String?      @unique
+  dean       User?        @relation("DeanCollege", fields: [deanId], references: [id])
   department Department[]
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model Department {
@@ -46,43 +46,42 @@ model Department {
   schoolId  String
   school    School    @relation(fields: [schoolId], references: [id])
   programs  Program[]
-  hodId String?
-  HOD User? @relation("HodDepartment",fields: [hodId],references: [id])
+  hodId     String?   @unique
+  HOD       User?     @relation("HodDepartment", fields: [hodId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Program {
-  id           String      @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String
   departmentId String
   department   Department @relation(fields: [departmentId], references: [id])
   students     User[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model User {
-  id           String       @id @default(uuid())
-  name         String
-  email        String       @unique
-  reg_no       Int          @unique
-  gender       String
-  password     String
-  role         ROLES        @default(STUDENT)
-  otp          Otp?
-  status       STATUS       @default(INACTIVE)
-  roleInTeam   ROLETEAM     @default(MEMBER)
-  programId    String?
-  program      Program?     @relation(fields: [programId], references: [id])
-  projectTeam  ProjectTeam?
+  id              String       @id @default(uuid())
+  name            String
+  email           String       @unique
+  reg_no          BigInt?          @unique
+  gender          String
+  password        String  
+  role            ROLES        @default(STUDENT)
+  otp             Otp?
+  status          STATUS       @default(INACTIVE)
+  roleInTeam      ROLETEAM     @default(MEMBER)
+  programId       String?
+  program         Program?     @relation(fields: [programId], references: [id])
+  projectTeam     ProjectTeam?
   directorCollege College[]    @relation("DirectorCollege")
-  deanCollege School[] @relation("DeanCollege")
-  hodDepartment Department[] @relation("HodDepartment")
- 
-  
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  deanCollege     School[]     @relation("DeanCollege")
+  hodDepartment   Department[] @relation("HodDepartment")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Otp {

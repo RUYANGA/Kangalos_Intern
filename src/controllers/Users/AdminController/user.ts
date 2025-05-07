@@ -1,5 +1,6 @@
 import {Request,Response,NextFunction} from 'express'
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
 
 const prisma=new PrismaClient()
 
@@ -85,6 +86,52 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
         return res.status(500).json({Error:"Error to add college"});
     }
 };
+
+export async function AddCollegeDirector(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+   try {   
+
+        const collegeId=req.params.id;
+
+        const {name,email,password,gender,reg_no}=req.body
+
+        const defoultPassword= password || 'password123'
+
+        const hashPassword=await bcrypt.hash(defoultPassword,12)     
+        
+        const user=await prisma.user.create({
+            data:{
+                name,
+                email,
+                reg_no:BigInt(reg_no),
+                password:hashPassword,
+                gender,
+            }
+        })
+
+        const college=  await prisma.college.update({
+            where:{id:collegeId},
+            data:{
+                director:{
+                    connect:{
+                        id:user.id
+                    }
+                }
+            }
+        })
+
+     res.status(201).json(college)
+
+   } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({Error:"Error to add college director"});
+    
+   }
+
+
+
+}
 
 export async function updateCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
