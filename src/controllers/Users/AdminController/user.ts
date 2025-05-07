@@ -73,11 +73,6 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
                     connect:{
                         id:universityId
                     }
-                },
-                dean:{
-                    connect:{
-                        id:deanId,
-                    }
                 }
             }
         })
@@ -105,8 +100,7 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
         const collegeUpdated=await prisma.college.update({
             where:{id:collegeId},
             data:{
-                name:name,
-                deanId:deanId
+                name:name                
             }
         });
 

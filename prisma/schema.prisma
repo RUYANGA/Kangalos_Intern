@@ -22,8 +22,8 @@ model College {
   universityId String
   university   UniversityOfRwanda @relation(fields: [universityId], references: [id])
   school       School[]
-  deanId       String
-  dean         User               @relation("DeanCollege", fields: [deanId], references: [id])
+  directorId      String?
+  director         User?               @relation("DirectorCollege", fields: [directorId], references: [id])
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 }
@@ -33,17 +33,21 @@ model School {
   name       String        @unique
   collegeId  String
   college    College       @relation(fields: [collegeId], references: [id])
-  department Departments[]
+  deanId       String?
+  dean         User?               @relation("DeanCollege", fields: [deanId], references: [id])
+  department Department[]
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 }
 
-model Departments {
+model Department {
   id        String    @id @default(uuid())
   name      String    @unique
   schoolId  String
   school    School    @relation(fields: [schoolId], references: [id])
   programs  Program[]
+  hodId String?
+  HOD User? @relation("HodDepartment",fields: [hodId],references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -52,7 +56,7 @@ model Program {
   id           String      @id @default(uuid())
   name         String
   departmentId String
-  department   Departments @relation(fields: [departmentId], references: [id])
+  department   Department @relation(fields: [departmentId], references: [id])
   students     User[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -72,7 +76,11 @@ model User {
   programId    String?
   program      Program?     @relation(fields: [programId], references: [id])
   projectTeam  ProjectTeam?
-  anOfColleges College[]    @relation("DeanCollege")
+  directorCollege College[]    @relation("DirectorCollege")
+  deanCollege School[] @relation("DeanCollege")
+  hodDepartment Department[] @relation("HodDepartment")
+ 
+  
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }

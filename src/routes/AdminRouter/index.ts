@@ -8,7 +8,7 @@ const router=Router();
 
 router.post('/admin/university',AuthorizeRoles(['ADMIN']),AddUniversity);  //Add universities in the system
 router.put('/admin/updateUniversity/:id',AuthorizeRoles(['ADMIN']),updateUniversity);  //Update universities
-router.post('/admin/university/:id/dean/:deanId',AuthorizeRoles(['ADMIN']),AddCollegeValidation,validateRequest,AddCollege); //add colleges related to university and dean of college
+router.post('/admin/university/:id',AuthorizeRoles(['ADMIN']),AddCollegeValidation,validateRequest,AddCollege); //add colleges related to university and dean of college
 router.put('/admin/college/:id/update',AuthorizeRoles(['ADMIN']),updateCollege);  //Update colleges
 router.delete('/admin/delete/college/:id',AuthorizeRoles(['ADMIN']),deleteCollege)  //Delete college with id
 
