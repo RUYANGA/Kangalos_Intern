@@ -96,6 +96,7 @@ export async function AddCollegeDirector(req:Request,res:Response,next:NextFunct
         const {name,email,password,gender,reg_no}=req.body
 
         const defoultPassword= password || 'password123'
+        const number=reg_no||12345
 
         const hashPassword=await bcrypt.hash(defoultPassword,12)     
         
@@ -103,7 +104,7 @@ export async function AddCollegeDirector(req:Request,res:Response,next:NextFunct
             data:{
                 name,
                 email,
-                reg_no:BigInt(reg_no),
+                reg_no:BigInt(number),
                 password:hashPassword,
                 gender,
             }
@@ -128,9 +129,6 @@ export async function AddCollegeDirector(req:Request,res:Response,next:NextFunct
         return res.status(500).json({Error:"Error to add college director"});
     
    }
-
-
-
 }
 
 export async function updateCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
