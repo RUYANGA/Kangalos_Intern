@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {AddUniversity,updateUniversity,AddCollege,updateCollege,deleteCollege,AddCollegeDirector,addSchool} from '../../controllers/Users/AdminController/user'
+import {AddUniversity,updateUniversity,AddCollege,updateCollege,deleteCollege,AddCollegeDirector,addSchool,AddDean} from '../../controllers/Users/AdminController/user'
 import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'
 import { AddCollegeValidation } from "../../middlewares/RequestValidations/requestValidator";
 import {validateRequest} from '../../middlewares/Auth/errorValiations'
@@ -14,6 +14,6 @@ router.post('/admin/college/:id/adddirector',AuthorizeRoles(['ADMIN']),AddColleg
 
 router.put('/admin/college/:id/update',AuthorizeRoles(['ADMIN']),updateCollege);  //Update colleges
 router.delete('/admin/delete/college/:id',AuthorizeRoles(['ADMIN']),deleteCollege)  //Delete college with id
-router.post('/admin/college/:id/addschool',AuthorizeRoles(['ADMIN']),addSchool)
-
+router.post('/admin/college/:id/addschool',AuthorizeRoles(['ADMIN']),addSchool);
+router.post('/admin/school/:id/adddean',AuthorizeRoles(['ADMIN']),AddDean);
 export default router

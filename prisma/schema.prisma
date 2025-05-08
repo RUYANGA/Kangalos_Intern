@@ -66,7 +66,7 @@ model User {
   id              String       @id @default(uuid())
   name            String
   email           String       @unique
-  reg_no          BigInt?          @unique
+  reg_no          BigInt?       
   gender          String
   password        String  
   role            ROLES        @default(STUDENT)
