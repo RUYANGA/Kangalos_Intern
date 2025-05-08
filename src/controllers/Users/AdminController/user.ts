@@ -190,13 +190,12 @@ export async function addSchool (req:Request,res:Response,next:NextFunction):Pro
 
     try {
 
-        interface NameInput{
-            name:string
-        }
-        
-        const collegeId=req.params.id;
+        const{name,email,password,reg_no}=req.body;
+        const defoultPassword= password || 'password123'
+        const number=reg_no||12345
 
-        const {name}:NameInput=req.body;
+        const user=await
+
 
     } catch (error) {
 
