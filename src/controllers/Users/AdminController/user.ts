@@ -248,9 +248,11 @@ export async function AddDean(req:Request,res:Response,next:NextFunction):Promis
             }
         })
 
+        res.status(201).json({Message:school})
 
     } catch (error) {
-        
+        console.log(error);
+        return res.status(500).json({Error:"Error to add dean of school"});
     }
 
 
