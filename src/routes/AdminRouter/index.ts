@@ -14,6 +14,6 @@ router.post('/admin/college/:id/adddirector',AuthorizeRoles(['ADMIN']),AddColleg
 
 router.put('/admin/college/:id/update',AuthorizeRoles(['ADMIN']),updateCollege);  //Update colleges
 router.delete('/admin/delete/college/:id',AuthorizeRoles(['ADMIN']),deleteCollege)  //Delete college with id
-router.post('admin/college/:id/addschool',AuthorizeRoles(['ADMIN']),addSchool)
+router.post('/admin/college/:id/addschool',AuthorizeRoles(['ADMIN']),addSchool)
 
 export default router

@@ -213,6 +213,47 @@ export async function addSchool (req:Request,res:Response,next:NextFunction):Pro
         return res.status(500).json({Error:"Error to add school"});
     }
 
+};
+
+export async function AddDean(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+
+        const schoolId=req.params.id
+        const {name,email,password,gender,reg_no}=req.body
+
+        const defoultPassword= password || 'password123'
+        const number=reg_no||12345
+
+        const hashPassword=await bcrypt.hash(defoultPassword,12)     
+        
+        const user=await prisma.user.create({
+            data:{
+                name,
+                email,
+                reg_no:BigInt(number),
+                password:hashPassword,
+                gender,
+            }
+        })
+
+        const school=await prisma.school.update({
+            where:{id:schoolId},
+            data:{
+                dean:{
+                    connect:{
+                        id:user.id
+                    }
+                }
+            }
+        })
+
+
+    } catch (error) {
+        
+    }
+
+
 }
 
 
