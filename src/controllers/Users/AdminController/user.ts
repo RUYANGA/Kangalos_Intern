@@ -190,11 +190,22 @@ export async function addSchool (req:Request,res:Response,next:NextFunction):Pro
 
     try {
 
-        const{name,email,password,reg_no}=req.body;
+        const{name,email,password,reg_no,gender}=req.body;
         const defoultPassword= password || 'password123'
         const number=reg_no||12345
+        const hashPassword=await bcrypt.hash(defoultPassword,12)  
 
-        const user=await
+        const user=await prisma.user.create({
+            data:{
+                name,
+                email,
+                password:hashPassword,
+                reg_no:BigInt(number),
+                gender
+            }
+        })
+
+        const school
 
 
     } catch (error) {
