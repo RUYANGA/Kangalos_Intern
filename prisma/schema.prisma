@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  //output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -71,8 +71,8 @@ model User {
   password        String  
   role            ROLES        @default(STUDENT)
   otp             Otp?
-  status          STATUS       @default(INACTIVE)
-  roleInTeam      ROLETEAM     @default(MEMBER)
+  status          STATUS       @default(ACTIVE)
+  roleInTeam      ROLETEAM?    
   programId       String?
   program         Program?     @relation(fields: [programId], references: [id])
   projectTeam     ProjectTeam?
@@ -127,9 +127,11 @@ enum PROJECTSTATUS {
 
 enum ROLES {
   ADMIN
-  STUDENT
-  SUPERVISOR
+  PRINCIPAL
+  DEAN
   HOD
+  SUPERVISOR
+  STUDENT  
 }
 
 enum ROLETEAM {

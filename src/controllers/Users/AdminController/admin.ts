@@ -87,7 +87,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
     }
 };
 
-export async function AddCollegeDirector(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function AddCollegePrincipal(req:Request,res:Response,next:NextFunction):Promise<any>{
 
    try {   
 
@@ -107,6 +107,16 @@ export async function AddCollegeDirector(req:Request,res:Response,next:NextFunct
                 reg_no:BigInt(number),
                 password:hashPassword,
                 gender,
+            }
+        })
+
+        await prisma.user.update({
+            where:{
+                id:user.id
+            },
+            data:{
+                role:'PRINCIPAL',
+                status:'ACTIVE',
             }
         })
 
@@ -140,7 +150,7 @@ export async function updateCollege(req:Request,res:Response,next:NextFunction):
         }
         const collegeId=req.params.id;
 
-        const{name,deanId}:InputCollege=req.body;
+        const{name}:InputCollege=req.body;
 
         const collegeUpdated=await prisma.college.update({
             where:{id:collegeId},
@@ -185,78 +195,70 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
     }
 };
 
+export interface AuthenticatRequest extends Request{
+    user:string
+}
 
-export async function addSchool (req:Request,res:Response,next:NextFunction):Promise<any>{
-
-    try {
-
-      const{name}=req.body;
-      const collegeId=req.params.id
-
-      const school=await prisma.school.create(({
-        data:{
-            name,
-            college:{
-                connect:{
-                    id:collegeId
-                }
-            }
-        }
-      }))
-
-
-      res.status(201).json({Message:school})
-
-    } catch (error) {
-
-        console.log(error);
-        return res.status(500).json({Error:"Error to add school"});
-    }
-
-};
-
-export async function AddDean(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function getAllUser(req:AuthenticatRequest,res:Response,next:NextFunction):Promise<any>{
 
     try {
-
-        const schoolId=req.params.id
-        const {name,email,password,gender,reg_no}=req.body
-
-        const defoultPassword= password || 'password123'
-        const number=reg_no||12345
-
-        const hashPassword=await bcrypt.hash(defoultPassword,12)     
-        
-        const user=await prisma.user.create({
-            data:{
-                name,
-                email,
-                reg_no:BigInt(number),
-                password:hashPassword,
-                gender,
+        const user=await prisma.user.count({
+            where:{
+                status:'ACTIVE'
             }
         })
 
-        const school=await prisma.school.update({
-            where:{id:schoolId},
-            data:{
-                dean:{
-                    connect:{
-                        id:user.id
-                    }
-                }
+        const university=await prisma.universityOfRwanda.count()
+        const college=await prisma.college.count()
+        const principal=await prisma.user.count({
+            where:{
+                role:'PRINCIPAL'
+            }
+        })
+        const deans=await prisma.user.count({
+            where:{
+                role:'DEAN'
             }
         })
 
-        res.status(201).json({Message:school})
+        const schools=await prisma.school.count()
+
+        const admin=await prisma.user.findUnique({
+            where:{id:req.user},
+            select:{
+                name:true,
+                email:true,
+                gender:true,
+                role:true
+            }
+        })
+      
+
+        res.status(200).json({totalUser:user,totalUnversity:university,totalCollege:college,principals:principal,schools:schools,deans:deans,admin});
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({Error:"Error to add dean of school"});
+        return res.status(500).json({Error:"Error to delete college"});
     }
 
 
 }
+
+export async function adminProfile(req:Request,res:Response,next:NextFunction){
+
+    try {
+        
+        const id=(req as any).user.id
+        const admin=await prisma.user.findMany({
+            where:{id:id}
+        })
+
+    } catch (error) {
+        
+    }
+}
+
+
 
 
 
