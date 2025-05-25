@@ -196,13 +196,18 @@ export async function deleteCollege(req:Request,res:Response,next:NextFunction):
 };
 
 export interface AuthenticatRequest extends Request{
-    user:string
+    user:string,
+    role:string
 }
 
-export async function getAllUser(req:AuthenticatRequest,res:Response,next:NextFunction):Promise<any>{
+export async function getAllUser(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     try {
-        const user=await prisma.user.count({
+
+
+        const {user}=req as AuthenticatRequest
+         
+        const user1=await prisma.user.count({
             where:{
                 status:'ACTIVE'
             }
@@ -224,7 +229,7 @@ export async function getAllUser(req:AuthenticatRequest,res:Response,next:NextFu
         const schools=await prisma.school.count()
 
         const admin=await prisma.user.findUnique({
-            where:{id:req.user},
+            where:{id:user.toString()},
             select:{
                 name:true,
                 email:true,
@@ -232,9 +237,25 @@ export async function getAllUser(req:AuthenticatRequest,res:Response,next:NextFu
                 role:true
             }
         })
+
+        await prisma.user.findMany({
+            where:{
+                name:{
+                    contains:{
+                        
+                    }
+                }
+            }
+        })
+
+        const hod=await prisma.user.count({
+            where:{
+                role:'HOD'
+            }
+        })
       
 
-        res.status(200).json({totalUser:user,totalUnversity:university,totalCollege:college,principals:principal,schools:schools,deans:deans,admin});
+        res.status(200).json({totalUser:user1,totalUnversity:university,totalCollege:college,principals:principal,schools:schools,deans:deans,HOD:hod,admin});
 
     } catch (error) {
         console.log(error);

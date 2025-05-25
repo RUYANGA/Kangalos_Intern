@@ -4,23 +4,72 @@ import bcrypt from 'bcrypt'
 
 const prisma=new PrismaClient()
 
-interface HodRequest{
+export interface HodRequest{
     name:string,
     email:string,
     password:string,
     gender:string,
-    reg_no:number
 
 }
 
-export async function addHodSchool(req:Request,res:Response,next:NextFunction){
+
+export async function addDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+   try {
+        const schoolId=req.params.id
+        const {name }=req.body;
+
+        const department=await prisma.department.create({
+            data:{
+                name,
+                school:{
+                    connect:{
+                        id:schoolId
+                    }
+                }
+            }
+        })
+
+        res.status(201).json({department:department})
+
+   } catch (error) {
+         console.log(error);
+        return res.status(500).json({Error:"Error to add school"});
+   }
+
+}
+
+export async function updateDepartment(req:Request,res:Response,next:NextFunction){
+
+    try {
+        
+        const departmentId=req.params.id
+        const {name}=req.body;
+
+        const department=await prisma.department.update({
+            where:{
+                id:departmentId
+            },
+            data:{
+                name
+            }
+        })
+
+
+    } catch (error) {
+        
+    }
+
+}
+
+export async function addHodSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
 
    try {
         const departmentId=req.params.id
-        const {name,email,password,gender,reg_no}=req.body
+        const {name,email,password,gender}:HodRequest=req.body
+
         
         const defoultPassword= password || 'password123'
-        const number=reg_no||12345
         
         const hashPassword=await bcrypt.hash(defoultPassword,12) ;
 
@@ -28,9 +77,9 @@ export async function addHodSchool(req:Request,res:Response,next:NextFunction){
             data:{
                 name,
                 email,
-                password,
+                password:hashPassword,
                 gender,
-                reg_no:BigInt(number)
+                reg_no:BigInt(12345)
 
             }
         })
