@@ -238,15 +238,15 @@ export async function getAllUser(req:Request,res:Response,next:NextFunction):Pro
             }
         })
 
-        await prisma.user.findMany({
-            where:{
-                name:{
-                    contains:{
+        // await prisma.user.findMany({
+        //     where:{
+        //         name:{
+        //             contains:{
                         
-                    }
-                }
-            }
-        })
+        //             }
+        //         }
+        //     }
+        // })
 
         const hod=await prisma.user.count({
             where:{
