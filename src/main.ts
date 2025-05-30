@@ -7,6 +7,8 @@ import adminRoutes from './routes/AdminRouter/admin'
 import principalRoutes from '../src/routes/PrincipalRoute/principal'
 import deanRoutes from  '../src/routes/DeanController/dean'
 
+import cors from 'cors'
+
 
 const port=process.env.PORT||2000
 
@@ -14,7 +16,14 @@ const port=process.env.PORT||2000
 
 const app=express()
 
-app.use(express.json())
+app.use(express.json());
+
+
+app.use(cors({
+    origin:'*',
+    methods:['GET','POST','PUT','PUCH'],
+    credentials:true
+}))
 
 
 
