@@ -48,7 +48,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
            }
         })
     
-        sendEmail(email,otp,user.name)//Send otp to email
+        sendEmail(user.email,otp,user.name)//Send otp to email
     
         res.status(201).json({Message:'User registered'})
         

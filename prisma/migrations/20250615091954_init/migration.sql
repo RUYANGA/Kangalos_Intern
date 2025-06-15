@@ -5,7 +5,7 @@ CREATE TYPE "STATUS" AS ENUM ('ACTIVE', 'INACTIVE');
 CREATE TYPE "PROJECTSTATUS" AS ENUM ('NOT_SUBMITTED', 'PENDING', 'REJECTED', 'IN_PROGRESS');
 
 -- CreateEnum
-CREATE TYPE "ROLES" AS ENUM ('ADMIN', 'STUDENT', 'SUPERVISOR', 'HOD');
+CREATE TYPE "ROLES" AS ENUM ('ADMIN', 'PRINCIPAL', 'DEAN', 'HOD', 'SUPERVISOR', 'STUDENT');
 
 -- CreateEnum
 CREATE TYPE "ROLETEAM" AS ENUM ('MEMBER', 'TEAM_LEADER', 'SUPERVISOR');
@@ -13,6 +13,7 @@ CREATE TYPE "ROLETEAM" AS ENUM ('MEMBER', 'TEAM_LEADER', 'SUPERVISOR');
 -- CreateTable
 CREATE TABLE "UniversityOfRwanda" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'University of Rwanda',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -24,7 +25,7 @@ CREATE TABLE "College" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "universityId" TEXT NOT NULL,
-    "dean" TEXT NOT NULL,
+    "directorId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -36,6 +37,7 @@ CREATE TABLE "School" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "collegeId" TEXT NOT NULL,
+    "deanId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -43,14 +45,15 @@ CREATE TABLE "School" (
 );
 
 -- CreateTable
-CREATE TABLE "Departments" (
+CREATE TABLE "Department" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "schoolId" TEXT NOT NULL,
+    "hodId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Departments_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Department_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -69,12 +72,12 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "reg_no" INTEGER NOT NULL,
+    "reg_no" BIGINT,
     "gender" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "ROLES" NOT NULL DEFAULT 'STUDENT',
-    "status" "STATUS" NOT NULL DEFAULT 'INACTIVE',
-    "roleInTeam" "ROLETEAM" NOT NULL DEFAULT 'MEMBER',
+    "status" "STATUS" NOT NULL DEFAULT 'ACTIVE',
+    "roleInTeam" "ROLETEAM",
     "programId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -120,16 +123,22 @@ CREATE TABLE "Project" (
 CREATE UNIQUE INDEX "College_name_key" ON "College"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "College_directorId_key" ON "College"("directorId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "School_name_key" ON "School"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Departments_name_key" ON "Departments"("name");
+CREATE UNIQUE INDEX "School_deanId_key" ON "School"("deanId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Department_name_key" ON "Department"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Department_hodId_key" ON "Department"("hodId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_reg_no_key" ON "User"("reg_no");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Otp_userId_key" ON "Otp"("userId");
@@ -141,13 +150,22 @@ CREATE UNIQUE INDEX "ProjectTeam_studentId_key" ON "ProjectTeam"("studentId");
 ALTER TABLE "College" ADD CONSTRAINT "College_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "UniversityOfRwanda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "College" ADD CONSTRAINT "College_directorId_fkey" FOREIGN KEY ("directorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "School" ADD CONSTRAINT "School_collegeId_fkey" FOREIGN KEY ("collegeId") REFERENCES "College"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Departments" ADD CONSTRAINT "Departments_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "School" ADD CONSTRAINT "School_deanId_fkey" FOREIGN KEY ("deanId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Program" ADD CONSTRAINT "Program_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Departments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Department" ADD CONSTRAINT "Department_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Department" ADD CONSTRAINT "Department_hodId_fkey" FOREIGN KEY ("hodId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Program" ADD CONSTRAINT "Program_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_programId_fkey" FOREIGN KEY ("programId") REFERENCES "Program"("id") ON DELETE SET NULL ON UPDATE CASCADE;
