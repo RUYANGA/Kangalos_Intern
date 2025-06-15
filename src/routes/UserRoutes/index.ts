@@ -2,7 +2,7 @@ import { Router } from "express";
 import {Register,resendOtp,verifyOtp,Login,forgetPassword,resetPassword} from '../../controllers/user'
 import {RegisterValidation,resendOtpValidation,verifyOtpValidation,LoginValidation,fogetPasswordValdation} from '../../middlewares/RequestValidations/requestValidator'
 import { validateRequest } from "../../middlewares/Auth/errorValiations";
-import {AuthorizeRoles}from '../../middlewares/Auth/TokenVerify'
+//import {AuthorizeRoles}from '../../middlewares/Auth/TokenVerify'
 
 
 const router=Router()
