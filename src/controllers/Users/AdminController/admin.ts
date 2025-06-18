@@ -67,44 +67,46 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
 
 export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-    const {nameCollege,phone,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
+    const { nameCollege, phone, locationCollege, descriptionCollege, nameDir, email, gender, password } = req.body;
+  const university = req.params.id;
 
-    const university=req.params.id;
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
 
-    try {
-    
-    const newCollege=await prisma.college.create({
-        data:{
-          name: nameCollege,
-          location:locationCollege,
-          description:descriptionCollege,
-          university:{
-            connect:{
-              id:university
-            }
+    const newCollege = await prisma.college.create({
+      data: {
+        name: nameCollege,
+        location: locationCollege,
+        description: descriptionCollege,
+        university: {
+          connect: { id: university },
+        },
+        director: {
+          create: {
+            name: nameDir,
+            email,
+            phone,
+            gender,
+            password: await bcrypt.hash(password, 12),
+            role: "PRINCIPAL",
+            status: "ACTIVE",
           },
-          director: {
-            create: {
-              name: nameDir,
-              email: email,
-              phone,
-              gender: gender,
-              password: await bcrypt.hash(password,12),
-              role: "PRINCIPAL",
-              status: "ACTIVE"
-          }
-        }
-        }
-      })
+        },
+      },
+      include: {
+        university: true,
+        director: true,
+      },
+    });
 
-      res.status(201).json({ College:newCollege})
-
+    res.status(201).json({ college: newCollege });
   } catch (error) {
-    return res.status(500).json({Message:"Error to add new college"})
-  }
-
-
-  
+    console.error(error);
+    return res.status(500).json({ message: "Error to add new college" });
+  } 
 }
 
 export async function AddSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
