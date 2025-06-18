@@ -93,6 +93,11 @@ model User {
   projectTeam      ProjectTeam?
   deanSchools      School?      @relation("DeanCollege")
   program          Program?     @relation(fields: [programId], references: [id])
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+
 }
 
 model Otp {

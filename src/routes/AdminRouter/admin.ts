@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {AddUniversity }from '../../controllers/Users/AdminController/admin'
+import {AddUniversity ,AddSchool}from '../../controllers/Users/AdminController/admin'
 
 
 
@@ -8,10 +8,17 @@ import {AddUniversity }from '../../controllers/Users/AdminController/admin'
 import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'
 import { AddCollegeValidation } from "../../middlewares/RequestValidations/requestValidator";
 import {validateRequest} from '../../middlewares/Auth/errorValiations'
+import { add } from "date-fns";
+import { addSchool } from "../../controllers/Users/PrincipalController/principal";
 
 const router=Router();
 
 router.post('/admin/university',AddUniversity);  //Add universities in the system
+
+router.post('/admin/addSchool/:id',AddSchool)
+
+
+
 // router.put('/admin/updateUniversity/:id',AuthorizeRoles(['ADMIN']),updateUniversity);  //Update universities
 // router.post('/admin/university/:id',AuthorizeRoles(['ADMIN']),AddCollegeValidation,validateRequest,AddCollege); //add colleges related to university and dean of college
 
