@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import express ,{Request,Response,NextFunction} from "express";
-import userRoutes from '../src/routes/UserRoutes'
+//import userRoutes from '../src/routes/UserRoutes'
 import adminRoutes from './routes/AdminRouter/admin'
 import principalRoutes from '../src/routes/PrincipalRoute/principal'
 import deanRoutes from  '../src/routes/DeanController/dean'
@@ -27,7 +27,7 @@ app.use(cors({
 
 
 
-app.use(userRoutes)
+//app.use(userRoutes)
 app.use(adminRoutes)
 app.use(principalRoutes)
 app.use(deanRoutes)
