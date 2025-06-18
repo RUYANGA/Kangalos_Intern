@@ -45,6 +45,27 @@ res.status(200).json({University:uniWithCollege})
   
 }};
 
+export async function getUniversity(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+  try {
+    const universities=await prisma.university.findMany({
+      select:{
+        name:true,
+        location:true,
+        description:true
+      }
+    })
+
+    res.status(200).json({AllUniversity:universities})
+  } catch (error) {
+    console.log(error)
+  return res.status(500).json({Message:"Error to get all university"})
+  }
+ 
+
+}
+
+
 export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
     const {nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body

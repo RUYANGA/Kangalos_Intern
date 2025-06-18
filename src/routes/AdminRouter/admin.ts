@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {AddUniversity ,AddSchool,AddCollege}from '../../controllers/Users/AdminController/admin'
+import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity}from '../../controllers/Users/AdminController/admin'
 
 
 
@@ -18,6 +18,7 @@ router.post('/admin/university',AddUniversity);  //Add universities in the syste
 router.post('/admin/addSchool/:id',AddSchool)
 
 router.post('/admin/newCollege/:id',AddCollege)
+router.get('/admin/allUniversity',getUniversity)
 
 
 
