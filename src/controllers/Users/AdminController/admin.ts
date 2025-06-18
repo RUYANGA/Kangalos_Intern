@@ -54,7 +54,7 @@ res.status(200).json(uniWithCollege)
 
 export async function AddSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-  const {location,name,description}=req.body;
+  const {location,name,description,nameDean,email,gender,password}=req.body;
   const {collegeId}=req.params
   try {
     const newSchool = await prisma.school.create({
@@ -66,9 +66,20 @@ export async function AddSchool(req:Request,res:Response,next:NextFunction):Prom
         connect: {
           id: collegeId
         }
-      }
+        
+      },
+       dean: {
+        create: {
+          name:nameDean,
+          email:email,
+          gender:gender,
+          password: await bcrypt.hash(password,12), 
+          role:     "DEAN",                  
+          status:   "ACTIVE"
+        }
+       }}
     }
-  });
+  );
   } catch (error) {
     return res.status(500).json({Message:"Error to add schools"})
   }
