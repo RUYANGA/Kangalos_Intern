@@ -51,6 +51,7 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
   try {
     const universities=await prisma.university.findMany({
       select:{
+        id:true,
         name:true,
         location:true,
         description:true
