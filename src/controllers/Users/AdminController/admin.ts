@@ -133,7 +133,9 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
  try {
    const college=await prisma.college.findMany({
     where:{
-      universityId
+      university:{
+        id:universityId
+      }
     },
     select:{
       id:true,
