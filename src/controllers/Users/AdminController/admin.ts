@@ -7,7 +7,7 @@ const prisma=new PrismaClient()
 
 export async function AddUniversity(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-  const {nameUn,locationUn,descriptionUn ,nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
+  const {nameUn,phone,locationUn,descriptionUn ,nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
 try {
   
   const uniWithCollege = await prisma.university.create({
@@ -25,6 +25,7 @@ try {
           create: {
             name: nameDir,
             email: email,
+            phone,
             gender: gender,
             password: await bcrypt.hash(password,12),
             role: "PRINCIPAL",
@@ -61,14 +62,12 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
     console.log(error)
   return res.status(500).json({Message:"Error to get all university"})
   }
- 
-
 }
 
 
 export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-    const {nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
+    const {nameCollege,phone,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
 
     const university=req.params.id;
 
@@ -88,6 +87,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
             create: {
               name: nameDir,
               email: email,
+              phone,
               gender: gender,
               password: await bcrypt.hash(password,12),
               role: "PRINCIPAL",
@@ -108,7 +108,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 }
 
 export async function AddSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
-const { location, name, description, nameDean, email, gender, password } = req.body;
+const { location, name,phone, description, nameDean, email, gender, password } = req.body;
   const collegeId = req.params.id;
 
   try {
@@ -126,6 +126,7 @@ const { location, name, description, nameDean, email, gender, password } = req.b
           create: {
             name: nameDean,
             email,
+            phone,
             gender,
             password: await bcrypt.hash(password, 12),
             role: "DEAN",
@@ -148,7 +149,7 @@ const { location, name, description, nameDean, email, gender, password } = req.b
 
 export async function addDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-  const {name,description,email,password,gender,hodName}=req.body
+  const {name,phone,description,email,password,gender,hodName}=req.body
   const schoolId=req.params.id;
 
   try {
@@ -166,6 +167,7 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
           create:{
             name:hodName,
             email,
+            phone,
             password:await bcrypt.hash(password,12),
             gender,
             role: "HOD",
@@ -180,8 +182,10 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
         hod:true
       }
     })
+    res.status(201).json({Departments:newDepartment})
   } catch (error) {
-    
+    console.log(error)
+    return res.status(500).json({error:"Erro to add new department"})
   }
 
 }

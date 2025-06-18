@@ -19,6 +19,7 @@ router.post('/admin/addSchool/:id',AddSchool)
 
 router.post('/admin/newCollege/:id',AddCollege)
 router.get('/admin/allUniversity',getUniversity)
+router.post('/admin/school/:id/addDepartment',addDepartment)
 
 
 
