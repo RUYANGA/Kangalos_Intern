@@ -1,6 +1,7 @@
 import {Request,Response,NextFunction} from 'express'
 import { PrismaClient } from "@prisma/client"
 import bcrypt from 'bcrypt'
+import { create } from 'domain'
 
 const prisma=new PrismaClient()
 
@@ -37,15 +38,53 @@ try {
     college: { include: { director: true } }
   }
 });
-
 res.status(200).json({University:uniWithCollege})
 } catch (error) {
   console.log(error)
   return res.status(500).json({Message:"Error to register university"})
   
-}
+}};
 
-};
+export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    const {name,nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
+
+    const university=req.params.id;
+
+    try {
+    
+    const newCollege=await prisma.college.create({
+        data:{
+          name: nameCollege,
+          location:locationCollege,
+          description:descriptionCollege,
+          university:{
+            connect:{
+              id:university
+            }
+          },
+          director: {
+            create: {
+              name: nameDir,
+              email: email,
+              gender: gender,
+              password: await bcrypt.hash(password,12),
+              role: "PRINCIPAL",
+              status: "ACTIVE"
+          }
+        }
+        }
+      })
+
+      res.status(201).json({ College:newCollege})
+
+  } catch (error) {
+    return res.status(500).json({Message:"Error to add new college"})
+  }
+
+
+  
+}
 
 export async function AddSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
 const { location, name, description, nameDean, email, gender, password } = req.body;
@@ -85,3 +124,43 @@ const { location, name, description, nameDean, email, gender, password } = req.b
   }
 }
 
+
+export async function addDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+  const {name,description,email,password,gender,hodName}=req.body
+  const schoolId=req.params.id;
+
+  try {
+    
+    const newDepartment=await prisma.department.create({
+      data:{
+        name,
+        desciption:description,
+        school:{
+          connect:{
+            id:schoolId
+          }
+        },
+        hod:{
+          create:{
+            name:hodName,
+            email,
+            password:await bcrypt.hash(password,12),
+            gender,
+            role: "HOD",
+            status: "ACTIVE",         
+
+          }
+        }
+
+      },
+      include:{
+        school:true,
+        hod:true
+      }
+    })
+  } catch (error) {
+    
+  }
+
+}

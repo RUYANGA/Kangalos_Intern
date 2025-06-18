@@ -51,7 +51,7 @@ model School {
 model Department {
   id        String    @id @default(uuid())
   name      String    @unique
-  desciption String
+  A String
   schoolId  String
   hodId     String?   @unique
   createdAt DateTime  @default(now())
