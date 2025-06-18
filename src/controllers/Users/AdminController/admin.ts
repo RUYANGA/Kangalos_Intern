@@ -68,47 +68,93 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
 
 export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-    const { nameCollege, phone, locationCollege, descriptionCollege, nameDir, email, gender, password } = req.body;
-  const university = req.params.id;
+    const {
+    nameCollege,
+    locationCollege,
+    descriptionCollege,
+    nameDir,
+    email,
+    gender,
+    password,
+    phone  //← include only if you added it to the schema
+  } = req.body;
+
+  const universityId = req.params.id;
+
+  // 1️⃣ Validate route param
+  if (!universityId || universityId === "undefined") {
+    return res.status(400).json({ message: "Valid university ID is required." });
+  }
+
+  // 2️⃣ Ensure director email is unique
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) {
+    return res.status(400).json({ message: "Email already in use." });
+  }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
-
-    const newCollege = await prisma.college.create({
+    const college = await prisma.college.create({
       data: {
         name: nameCollege,
         location: locationCollege,
         description: descriptionCollege,
         university: {
-          connect: { id: university },
+           connect: { 
+            id: universityId 
+          }
         },
         director: {
           create: {
             name: nameDir,
             email,
-            phone,
             gender,
             password: await bcrypt.hash(password, 12),
             role: "PRINCIPAL",
             status: "ACTIVE",
-          },
-        },
+            phone,  // only include if added to schema
+          }
+        }
       },
-      include: {
-        university: true,
-        director: true,
-      },
+      include: { university: true, director: true }
     });
 
-    res.status(201).json({ college: newCollege });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error to add new college" });
-  } 
+    return res.status(201).json({ college });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Failed to add college." });
+  }
 }
+
+
+export async function getCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+ try {
+   const college=await prisma.college.findMany({
+    select:{
+      id:true,
+      name:true,
+      location:true,
+      description:true,
+      director:{
+        select:{
+          name:true,
+          email:true,
+          phone:true,
+          gender:true,
+          role:true
+        }
+      }
+    }
+  })
+  res.status(200).json({College:college})
+ } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error to get all college" });
+ }
+
+}
+
+
 
 export async function AddSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
 const { location, name,phone, description, nameDean, email, gender, password } = req.body;
