@@ -11,7 +11,7 @@ datasource db {
 
 model University {
   id          String    @id @default(uuid())
-  name        String    @default("University of Rwanda")
+  name        String   @unique
   description String
   location    String
   college     College[]
@@ -63,7 +63,7 @@ model Department {
 
 model Program {
   id           String     @id @default(uuid())
-  name         String
+  name         String 
   description String
   departmentId String
   createdAt    DateTime   @default(now())

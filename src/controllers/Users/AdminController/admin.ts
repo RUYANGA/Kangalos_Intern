@@ -9,6 +9,15 @@ export async function AddUniversity(req:Request,res:Response,next:NextFunction):
 
   const {nameUn,phone,locationUn,descriptionUn ,nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
 try {
+
+    // 🛑 Check if university name already exists
+    const existingUni = await prisma.university.findUnique({
+      where: { name: nameUn },
+    });
+
+    if (existingUni) {
+      return res.status(409).json({ error: "University name already exists" });
+    }
   
   const uniWithCollege = await prisma.university.create({
   data: {
