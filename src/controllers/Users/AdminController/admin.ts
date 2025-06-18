@@ -47,7 +47,7 @@ res.status(200).json({University:uniWithCollege})
 
 export async function AddCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
-    const {name,nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
+    const {nameCollege,locationCollege,descriptionCollege, nameDir,email,gender,password}=req.body
 
     const university=req.params.id;
 
@@ -135,7 +135,7 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
     const newDepartment=await prisma.department.create({
       data:{
         name,
-        desciption:description,
+        description,
         school:{
           connect:{
             id:schoolId

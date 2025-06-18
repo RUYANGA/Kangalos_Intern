@@ -17,7 +17,7 @@ router.post('/admin/university',AddUniversity);  //Add universities in the syste
 
 router.post('/admin/addSchool/:id',AddSchool)
 
-router.post('/admin/newCollege',AddCollege)
+router.post('/admin/newCollege/:id',AddCollege)
 
 
 
