@@ -42,7 +42,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
     
         await prisma.otp.create({
            data:{
-            otp:otp,
+            code:otp,
             expiredDate:expiredOtp,
             userId:user.id
            }
@@ -80,7 +80,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
         await prisma.otp.update({
             where:{userId:user.id},
             data:{
-                otp:otp,
+                code:otp,
                 expiredDate:expiredOtp
             }
         })
@@ -116,7 +116,7 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
 
         if(!foundOtp)return res.status(404).json('Otp not found')
 
-        if(foundOtp?.otp !== otp){
+        if(foundOtp?.code !== otp){
 
             return res.status(401).json({Error:'Invalid Otp'})
 

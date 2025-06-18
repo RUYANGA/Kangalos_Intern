@@ -128,8 +128,13 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 
 export async function getCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
+  const universityId=req.params.id
+
  try {
    const college=await prisma.college.findMany({
+    where:{
+      universityId
+    },
     select:{
       id:true,
       name:true,
