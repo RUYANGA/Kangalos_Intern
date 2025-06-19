@@ -1,7 +1,6 @@
 import {Request,Response,NextFunction} from 'express'
 import { PrismaClient } from "@prisma/client"
 import bcrypt from 'bcrypt'
-import { create } from 'domain'
 
 const prisma=new PrismaClient()
 
@@ -14,9 +13,27 @@ try {
     const existingUni = await prisma.university.findUnique({
       where: { name: nameUn },
     });
+    const existingCollege=await prisma.college.findUnique({
+      where:{
+        name:nameCollege
+      }
+    })
+
+    const existPrincipal=await prisma.user.findUnique({
+      where:{
+        email:email
+      }
+    })
 
     if (existingUni) {
       return res.status(409).json({ error: "University name already exists" });
+    }
+    if(existingCollege){
+      return res.status(409).json({ error: "College name already exists" });
+    }
+
+    if(existPrincipal){
+      return res.status(409).json({ error: "Email name already exists" });
     }
   
   const uniWithCollege = await prisma.university.create({
@@ -90,13 +107,16 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 
   const universityId = req.params.id;
 
-  // 1️⃣ Validate route param
-  if (!universityId || universityId === "undefined") {
-    return res.status(400).json({ message: "Valid university ID is required." });
-  }
-
   // 2️⃣ Ensure director email is unique
   const existing = await prisma.user.findUnique({ where: { email } });
+  const existCollege=await prisma.college.findUnique({
+    where:{
+      name:nameCollege
+    }
+  })
+  if(existCollege){
+    return res.status(400).json({ message: "Name already in use." });
+  }
   if (existing) {
     return res.status(400).json({ message: "Email already in use." });
   }

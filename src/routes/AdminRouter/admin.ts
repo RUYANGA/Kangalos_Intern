@@ -2,7 +2,7 @@ import { Router } from "express";
 import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/Users/AdminController/admin'
 
 import { validateBody } from "../../middlewares/RequestValidations/validates";
-import { AddUniversityFlatBody, AddUniversityFlatSchema } from "../../middlewares/RequestValidations/requestValidator";
+//import {  AddUniversityFlatSchema ,AddCollegeSchema} from "../../middlewares/RequestValidations/requestValidator";
 
 
 
@@ -16,11 +16,12 @@ import { addSchool } from "../../controllers/Users/PrincipalController/principal
 
 const router=Router();
 
-router.post('/admin/university',validateBody(AddUniversityFlatSchema),AddUniversity);  //Add universities in the system
+router.post('/admin/university',AddUniversity);  //Add universities in the system
 
 router.post('/admin/addSchool/:id',AddSchool)
 
 router.post('/admin/newCollege/:id',AddCollege)
+
 router.get('/admin/allUniversity',getUniversity)
 router.post('/admin/school/:id/addDepartment',addDepartment)
 router.get('/admin/getcollege/:id',getCollege)
