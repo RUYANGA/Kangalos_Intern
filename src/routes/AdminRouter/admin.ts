@@ -19,7 +19,7 @@ import {validateRequest} from '../../middlewares/RequestValidations/validates'
 
 const router=Router();
 
-router.post('/admin/university',AddUniversityValidation,validateRequest,AddUniversity);  //Add universities in the system
+router.post('/admin/university',AddUniversity);  //Add universities in the system
 router.post('/admin/addSchool/:id',AddSchoolValidation,validateRequest,AddSchool)
 router.post('/admin/newCollege/:id',AddCollegeValidation,validateRequest,AddCollege)
 router.post('/admin/school/:id/addDepartment',AddDepartmentValidation,validateRequest,addDepartment)

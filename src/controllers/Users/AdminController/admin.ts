@@ -229,6 +229,7 @@ const { location, name,phone, description, nameDean, email, gender, password } =
 
     res.status(201).json({ school: newSchool });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({Message:"Error to add schools"})
   }
 }
