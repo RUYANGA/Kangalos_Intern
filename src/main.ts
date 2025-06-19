@@ -20,11 +20,10 @@ app.use(express.json());
 
 
 app.use(cors({
-    origin:'https://kangalos.vercel.app',
-    methods:['GET','POST','PUT','PUTCH','DELETE'],
-    credentials:true
-}))
-
+  origin: ['https://kangalos.vercel.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  credentials: true
+}));
 
 
 app.use(userRoutes)
