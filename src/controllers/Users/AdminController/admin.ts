@@ -155,6 +155,8 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 }
 
 
+
+
 export async function getCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
 
   const universityId=req.params.id
@@ -232,6 +234,8 @@ const { location, name,phone, description, nameDean, email, gender, password } =
 }
 
 
+
+
 export async function addDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
 
   const {name,phone,description,email,password,gender,hodName}=req.body
@@ -274,3 +278,4 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
   }
 
 }
+

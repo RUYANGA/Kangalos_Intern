@@ -1,17 +1,18 @@
 import { Router } from "express";
 import {Register,resendOtp,verifyOtp,Login,forgetPassword,resetPassword} from '../../controllers/user'
-import {RegisterValidation,resendOtpValidation,verifyOtpValidation,LoginValidation,fogetPasswordValdation} from '../../middlewares/RequestValidations/requestValidator'
-import { validateRequest } from "../../middlewares/Auth/errorValiations";
-import {AuthorizeRoles}from '../../middlewares/Auth/TokenVerify'
+
+import { signUp_Validation ,resendOtp_validation,verify_Otp,loginValidation ,} from "../../middlewares/RequestValidations/requestValidator";
+import {validateRequest} from '../../middlewares/RequestValidations/validates'
+
 
 
 const router=Router()
 
-router.post('/user/register',RegisterValidation,validateRequest,Register);
-router.post('/user/resendOtp',resendOtpValidation,validateRequest,resendOtp);
-router.post('/user/verifyOtp',verifyOtpValidation,validateRequest,verifyOtp);
-router.post('/user/login',LoginValidation,validateRequest,Login);
-router.post('/user/forget-password',fogetPasswordValdation,validateRequest,forgetPassword);
+router.post('/user/register',signUp_Validation,validateRequest,Register);
+router.post('/user/resendOtp',resendOtp_validation,validateRequest,resendOtp);
+router.post('/user/verifyOtp',verify_Otp,validateRequest,verifyOtp);
+router.post('/user/login',loginValidation,validateRequest,Login);
+router.post('/user/forget-password',forgetPassword);
 router.post('/user/rest-password',resetPassword)
 
 

@@ -20,7 +20,7 @@ app.use(express.json());
 
 
 app.use(cors({
-    origin:'*',
+    origin:'https://kangalos.vercel.app',
     methods:['GET','POST','PUT','PUTCH','DELETE'],
     credentials:true
 }))

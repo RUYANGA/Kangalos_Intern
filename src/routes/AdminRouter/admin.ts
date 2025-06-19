@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/Users/AdminController/admin'
 
-import { validateBody } from "../../middlewares/RequestValidations/validates";
+//import { validateBody } from "../../middlewares/RequestValidations/validates";
 //import {  AddUniversityFlatSchema ,AddCollegeSchema} from "../../middlewares/RequestValidations/requestValidator";
 
 
@@ -9,21 +9,22 @@ import { validateBody } from "../../middlewares/RequestValidations/validates";
 
 
 import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'
-//import { AddCollegeValidation } from "../../middlewares/RequestValidations/requestValidator";
-import {validateRequest} from '../../middlewares/Auth/errorValiations'
+
+
 import { add } from "date-fns";
 import { addSchool } from "../../controllers/Users/PrincipalController/principal";
 
+import {AddUniversityValidation,AddCollegeValidation,AddSchoolValidation,AddDepartmentValidation} from '../../middlewares/RequestValidations/requestValidator'
+import {validateRequest} from '../../middlewares/RequestValidations/validates'
+
 const router=Router();
 
-router.post('/admin/university',AddUniversity);  //Add universities in the system
-
-router.post('/admin/addSchool/:id',AddSchool)
-
-router.post('/admin/newCollege/:id',AddCollege)
+router.post('/admin/university',AddUniversityValidation,validateRequest,AddUniversity);  //Add universities in the system
+router.post('/admin/addSchool/:id',AddSchoolValidation,validateRequest,AddSchool)
+router.post('/admin/newCollege/:id',AddCollegeValidation,validateRequest,AddCollege)
+router.post('/admin/school/:id/addDepartment',AddDepartmentValidation,validateRequest,addDepartment)
 
 router.get('/admin/allUniversity',getUniversity)
-router.post('/admin/school/:id/addDepartment',addDepartment)
 router.get('/admin/getcollege/:id',getCollege)
 
 

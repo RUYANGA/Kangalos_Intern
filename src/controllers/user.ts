@@ -50,11 +50,11 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
     
         sendEmail(user.email,otp,user.name)//Send otp to email
     
-        res.status(201).json({Message:'User registered'})
+        res.status(201).json({Message:`User registered verify otp send to ${email} `})
         
     } catch (error) {
 
-        //console.log(error)
+        console.log(error)
         return res.status(500).json({Error:'Error to register user '})
     }
 };
