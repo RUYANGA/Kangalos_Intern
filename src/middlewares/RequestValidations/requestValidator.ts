@@ -88,7 +88,6 @@ export const AddUniversityValidation = [
   body('nameUn')
     .notEmpty().withMessage('University name is required')
     .isString().withMessage('University name must be a string')
-    .trim()
     .escape()
     .custom(async (value) => {
       const uni = await prisma.university.findUnique({ where: { name: value } });
@@ -102,7 +101,6 @@ export const AddUniversityValidation = [
     .withMessage('University location is required')
     .isString()
     .withMessage('University location must be a string')
-    .trim()
     .escape(),
 
   body('descriptionUn')
@@ -110,7 +108,6 @@ export const AddUniversityValidation = [
     .withMessage('University description is required')
     .isString()
     .withMessage('University description must be a string')
-    .trim()
     .escape(),
 
   // College fields
@@ -133,14 +130,12 @@ export const AddUniversityValidation = [
     .withMessage('College location is required')
     .isString()
     .withMessage('College location must be a string')
-    .trim()
     .escape(),
   body('descriptionCollege')
     .notEmpty()
     .withMessage('College description is required')
     .isString()
     .withMessage('College description must be a string')
-    .trim()
     .escape(),
 
   // Director fields
@@ -169,9 +164,9 @@ export const AddUniversityValidation = [
 
   body('phone')
     .optional()
+    .trim()
     .isMobilePhone('any')
     .withMessage('Phone must be a valid phone number')
-    .trim()
     .escape(),
 
   body('gender')
