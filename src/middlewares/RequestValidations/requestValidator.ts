@@ -1,12 +1,12 @@
 import { body } from "express-validator";
 import { PrismaClient } from "@prisma/client";
-import { min } from "date-fns";
+import { max, min } from "date-fns";
 
 const prisma=new PrismaClient()
 
 
 export const signUp_Validation=[
-    body("name")
+    body("firstName")
     .notEmpty()
     .withMessage('Username must not be empty')
     .escape()
@@ -14,6 +14,19 @@ export const signUp_Validation=[
     .withMessage('Username must be string')
     .isLength({min:3})
     .withMessage('User must be at least 3 char '),
+    body("lastName")
+    .notEmpty()
+    .withMessage('Username must not be empty')
+    .escape()
+    .isString()
+    .withMessage('Username must be string')
+    .isLength({min:3})
+    .withMessage('User must be at least 3 char '),
+    body("phone")
+    .notEmpty()
+    .withMessage("Phone number required")
+    .isMobilePhone('any') // accepts any locale format
+    .withMessage('Invalid phone number'),
     body('email')
     .notEmpty()
     .toLowerCase()
@@ -26,23 +39,6 @@ export const signUp_Validation=[
             if(user){
                 return Promise.reject(
                     'User with email existing'
-                )
-            }
-        })
-    }),
-    body("reg_no")
-    .notEmpty()
-    .withMessage('Reg number required')
-    .custom((value,{req})=>{
-        return prisma.user.findUnique({
-            where:{
-                reg_no:value
-            }
-        })
-        .then((value)=>{
-            if(value){
-                return Promise.reject(
-                    "Reg number existing"
                 )
             }
         })
@@ -404,9 +400,8 @@ export const verify_Otp=[
 export const loginValidation=[
     body('email')
     .notEmpty()
-    .withMessage('Email required')
     .toLowerCase()
-    .escape()
+    .normalizeEmail()
     .custom((value,{req})=>{
         return prisma.user.findUnique({
             where:{email:value}

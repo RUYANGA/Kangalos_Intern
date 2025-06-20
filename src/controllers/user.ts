@@ -5,6 +5,7 @@ import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
 import {sendEmail,forgetPassword1} from'../util/nodemailer'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import {LoginInput, ResendOtpInput, UserInput, VerifyInput,FogetEmail} from '../types/dataTypes'
 
 
 const prisma=new PrismaClient()
@@ -12,18 +13,12 @@ const JWT_KEY=process.env.JWTKEY || 'jkdsdfguyi90uy7tryfdfchvbhjuhigy' as string
 const tokenkey=process.env.TOKEN_KEY || 'oiuytrdfghjkopiuygyf' as string;
 
 
-export async function Register(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function Register(req:Request<{},{},UserInput>,res:Response,next:NextFunction):Promise<any>{
 
     try {
-        interface UserInput{
-            email:string,
-            name:string,
-            password:string,
-            gender:string,
-            reg_no:string
-        }
+       
     
-        const{name,email,reg_no,gender,password}:UserInput=req.body;
+        const{firstName,lastName,phone,email,gender,password}=req.body;
     
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp=addMinutes(new Date(),15)
@@ -32,11 +27,13 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
     
         const user=await prisma.user.create({
             data:{
-                name,
+                firstName,
+                lastName,
                 email,
-                reg_no:parseInt(reg_no),
-                password:hashPassword,
+                password,
+                phone,
                 gender,
+
             }
         })
     
@@ -48,7 +45,7 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
            }
         })
     
-        sendEmail(user.email,otp,user.name)//Send otp to email
+        sendEmail(user.email,otp,user.firstName)//Send otp to email
     
         res.status(201).json({Message:`User registered verify otp send to ${email} `})
         
@@ -60,13 +57,11 @@ export async function Register(req:Request,res:Response,next:NextFunction):Promi
 };
 
 
-export async function resendOtp(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function resendOtp(req:Request<{},{},ResendOtpInput>,res:Response,next:NextFunction):Promise<any>{
    try {
 
-        interface ResendInput{
-            email:string
-        }
-        const {email}:ResendInput=req.body
+        
+        const {email}=req.body
 
         const user =await prisma.user.findUnique({
             where:{email:email}
@@ -85,7 +80,7 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
             }
         })
 
-        sendEmail(email,otp,user.name)//Send otp to email
+        sendEmail(email,otp,user.firstName)//Send otp to email
         
         res.status(200).json({Message:'Email resend successfuly, check on your email!'})
 
@@ -96,15 +91,12 @@ export async function resendOtp(req:Request,res:Response,next:NextFunction):Prom
    }
 };
 
-export async function verifyOtp(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function verifyOtp(req:Request<{},{},VerifyInput>,res:Response,next:NextFunction):Promise<any>{
 
    try {
 
-        interface VetifyInput{
-            email:string,
-            otp:string
-        }
-        const {email,otp}:VetifyInput=req.body;
+       
+        const {email,otp}=req.body;
 
         const user=await prisma.user.findUnique({
             where:{email:email}
@@ -148,15 +140,12 @@ export async function verifyOtp(req:Request,res:Response,next:NextFunction):Prom
 }
 
 
-export async function Login(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function Login(req:Request<{},{},LoginInput>,res:Response,next:NextFunction):Promise<any>{
 
    try {
-        interface LoginInput{
-            email:string,
-            password:string
-        };
+       
 
-        const{email,password}:LoginInput=req.body;
+        const{email,password}=req.body;
 
         const user=await prisma.user.findUnique({
             where:{email:email}
@@ -172,7 +161,7 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
             {
                 id:user?.id,
                 role:user?.role,
-                roleinTeam:user?.roleInTeam,
+                UserType:user.userType,
                 email:user?.email
             },
                JWT_KEY,
@@ -191,13 +180,9 @@ export async function Login(req:Request,res:Response,next:NextFunction):Promise<
 
 };
 
-export async function forgetPassword(req:Request,res:Response,next:NextFunction):Promise<any>{
+export async function forgetPassword(req:Request<{},{},FogetEmail>,res:Response,next:NextFunction):Promise<any>{
 
    try {
-
-    interface FogetEmail{
-        email:string
-    };
 
     const {email}=req.body;
 
@@ -217,7 +202,7 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
         }
     )
 
-    forgetPassword1(user.email,token,user?.name);
+    forgetPassword1(user.email,token,user?.firstName)
 
     res.status(200).json({Message:`Rest password link sent to ${email}`,token:token})
 
@@ -228,13 +213,15 @@ export async function forgetPassword(req:Request,res:Response,next:NextFunction)
    }
 };
 
-export async function resetPassword(req:Request,res:Response,next:NextFunction):Promise<any>{
-
-    try {
-        interface Password{
+ type Password={
             password:string
         };
-        const{password}:Password=req.body;
+
+export async function resetPassword(req:Request<{},{},Password>,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+       
+        const{password}=req.body;
 
         const authHeader=req.headers['authorization'];
         const token=authHeader?.split(" ")[1];
