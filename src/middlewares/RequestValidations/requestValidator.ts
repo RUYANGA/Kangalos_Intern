@@ -116,12 +116,11 @@ export const AddUniversityValidation = [
     .withMessage('College name is required')
     .isString()
     .withMessage('College name must be a string')
-    .trim()
     .escape()
     .custom(async (value) => {
       const college = await prisma.college.findUnique({ where: { name: value } });
       if (college) {
-        return Promise.reject('College with this name already exists');
+        return Promise.reject('College with this name already exists !');
       }
     }),
 
@@ -144,11 +143,11 @@ export const AddUniversityValidation = [
     .withMessage('Director name is required')
     .isString()
     .withMessage('Director name must be a string')
-    .trim()
     .escape(),
 
   body('email')
     .notEmpty()
+    .trim()
     .withMessage('Director email is required')
     .isEmail()
     .withMessage('Director email must be valid')

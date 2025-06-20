@@ -28,9 +28,9 @@ try {
     if (existingUni) {
       return res.status(409).json({ error: "University name already exists" });
     }
-    if(existingCollege){
-      return res.status(409).json({ error: "College name already exists" });
-    }
+    // if(existingCollege){
+    //   return res.status(409).json({ error: "College name already exists" });
+    // }
 
     if(existPrincipal){
       return res.status(409).json({ error: "Email name already exists" });
@@ -65,7 +65,7 @@ try {
     college: { include: { director: true } }
   }
 });
-res.status(200).json({University:uniWithCollege})
+res.status(200).json({Message:"University added successfully"})
 } catch (error) {
   console.log(error)
   return res.status(500).json({Message:"Error to register university"})
@@ -107,6 +107,20 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
 
   const universityId = req.params.id;
 
+  if(!universityId){
+    return res.status(400).json({Message:"University id required !"})
+  }
+
+  const exixtUni=await prisma.university.findUnique({
+    where:{
+      id:universityId
+    }
+  })
+
+  if(!exixtUni){
+    return res.status(404).json({Message:'University to add college not found! '})
+  }
+
   // 2️⃣ Ensure director email is unique
   const existing = await prisma.user.findUnique({ where: { email } });
   const existCollege=await prisma.college.findUnique({
@@ -147,7 +161,7 @@ export async function AddCollege(req:Request,res:Response,next:NextFunction):Pro
       include: { university: true, director: true }
     });
 
-    return res.status(201).json({ college });
+    return res.status(201).json({ Message:`College added to ${exixtUni.name}`});
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Failed to add college." });
@@ -198,6 +212,22 @@ export async function AddSchool(req:Request,res:Response,next:NextFunction):Prom
 const { location, name,phone, description, nameDean, email, gender, password } = req.body;
   const collegeId = req.params.id;
 
+  if(!collegeId){
+    return res.status(400).json({Message:"College id is not found"})
+  }
+
+  const existCollege=await prisma.college.findUnique({
+    where:{
+      id:collegeId
+    }
+  })
+
+  if(!existCollege){
+    return res.status(404).json({Message:'College to add school not found!'})
+  }
+
+
+
   try {
     const newSchool = await prisma.school.create({
       data: {
@@ -242,6 +272,20 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
   const {name,phone,description,email,password,gender,hodName}=req.body
   const schoolId=req.params.id;
 
+  if(!schoolId){
+    return res.status(400).json({Message:'School id is not found!'})
+  }
+
+  const existSchool=await prisma.school.findUnique({
+    where:{
+      id:schoolId
+    }
+  })
+
+  if(!existSchool){
+    return res.status(404).json({Message:"School to add department not found!"})
+  }
+
   try {
     
     const newDepartment=await prisma.department.create({
@@ -277,6 +321,13 @@ export async function addDepartment(req:Request,res:Response,next:NextFunction):
     console.log(error)
     return res.status(500).json({error:"Erro to add new department"})
   }
+
+}
+
+
+export async function addProgram(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+  const {name,description,}=req.body
 
 }
 
