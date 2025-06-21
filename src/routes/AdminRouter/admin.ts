@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/Admin/AdminController/admin'
+import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/AdminController/admin'
 
 //import { validateBody } from "../../middlewares/RequestValidations/validates";
 //import {  AddUniversityFlatSchema ,AddCollegeSchema} from "../../middlewares/RequestValidations/requestValidator";

@@ -152,7 +152,6 @@ model Student {
 model Staff {
   userId    String   @id
   jobTitle  String?
-  hireDate  DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

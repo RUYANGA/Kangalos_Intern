@@ -45,7 +45,8 @@ export type AddCollege={
     password:string,
     gender:string,
     phone:string,
-    dateOfBirth:Date
+    dateOfBirth:Date,
+    jobTitle:string
 
 
 }

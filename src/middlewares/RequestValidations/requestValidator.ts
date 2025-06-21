@@ -88,9 +88,11 @@ export const resendOtp_validation=[
 
 export const AddUniversityValidation = [
   // University fields
-  body('nameUn')
-    .notEmpty().withMessage('University name is required')
-    .isString().withMessage('University name must be a string')
+  body('name')
+    .notEmpty()
+    .withMessage('University name is required')
+    .isString()
+    .withMessage('University name must be a string')
     .escape()
     .custom(async (value) => {
       const uni = await prisma.university.findUnique({ where: { name: value } });
@@ -99,89 +101,19 @@ export const AddUniversityValidation = [
       }
     }),
 
-  body('locationUn')
+  body('location')
     .notEmpty()
     .withMessage('University location is required')
     .isString()
     .withMessage('University location must be a string')
     .escape(),
 
-  body('descriptionUn')
+  body('description')
     .notEmpty()
     .withMessage('University description is required')
     .isString()
     .withMessage('University description must be a string')
-    .escape(),
-
-  // College fields
-  body('nameCollege')
-    .notEmpty()
-    .withMessage('College name is required')
-    .isString()
-    .withMessage('College name must be a string')
     .escape()
-    .custom(async (value) => {
-      const college = await prisma.college.findUnique({ where: { name: value } });
-      if (college) {
-        return Promise.reject('College with this name already exists !');
-      }
-    }),
-
-  body('locationCollege')
-    .notEmpty()
-    .withMessage('College location is required')
-    .isString()
-    .withMessage('College location must be a string')
-    .escape(),
-  body('descriptionCollege')
-    .notEmpty()
-    .withMessage('College description is required')
-    .isString()
-    .withMessage('College description must be a string')
-    .escape(),
-
-  // Director fields
-  body('nameDir')
-    .notEmpty()
-    .withMessage('Director name is required')
-    .isString()
-    .withMessage('Director name must be a string')
-    .escape(),
-
-  body('email')
-    .notEmpty()
-    .trim()
-    .withMessage('Director email is required')
-    .isEmail()
-    .withMessage('Director email must be valid')
-    .normalizeEmail()
-    .custom(async (value) => {
-      const user = await prisma.user.findUnique({ where: { email: value } });
-      if (user) {
-        return Promise.reject(
-            'User with this email already exists'
-        );
-      }
-    }),
-
-  body('phone')
-    .optional()
-    .trim()
-    .isMobilePhone('any')
-    .withMessage('Phone must be a valid phone number')
-    .escape(),
-
-  body('gender')
-    .notEmpty()
-    .withMessage('Gender is required')
-    .isIn(['Male', 'Female'])
-    .withMessage('Gender must be either Male or Female'),
-
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required')
-    .isLength({ min: 5 })
-    .withMessage('Password must be at least 5 characters'),
 ];
 
 
