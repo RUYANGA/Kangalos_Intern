@@ -25,8 +25,7 @@ export const AddDepartmentSchema = z.object({
 
   password: z.string().min(5, 'Password must be at least 5 characters'),
 
-  phone: z.string().optional()
-    .refine((val) => !val || z.string().regex(/^\+?\d{6,15}$/).safeParse(val).success,
+  phone: z.string().refine((val) => !val || z.string().regex(/^\+?\d{6,15}$/).safeParse(val).success,
       { message: 'Invalid phone number format' }),
 
   dateOfBirth: z.string()
