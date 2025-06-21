@@ -41,7 +41,6 @@ model School {
   id          String     @id @default(uuid())
   name        String     @unique
   description String
-  location    String
   collegeId   String
   deanId      String?    @unique
   createdAt   DateTime   @default(now())

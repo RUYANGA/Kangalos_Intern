@@ -47,11 +47,21 @@ export async function AddCollege(req:Request<{id:string},{},AddCollege>,res:Resp
 
                     }
                 }
+            },
+            include:{
+                university:true,
+                director:true
             }
         })
+
+        return res.status(201).json({
+        message: 'College created successfully',
+        college,
+        });
         
     } catch (error) {
-        
+        console.log(error)
+        res.status(500).json({Error:"Error to add college",error})
     }
 
 }

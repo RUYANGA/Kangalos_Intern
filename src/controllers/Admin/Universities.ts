@@ -15,7 +15,10 @@ export async function AddUniversity(req:Request<{},{},UniversityInput>,res:Respo
                 location
             }
         })
-        res.status(201).json({Message:'University added successfuly',University:unversity})
+        return res.status(201).json({
+        message: 'Unversity created successfully',
+        unversity,
+        });
    } catch (error) {
     console.log(error)
     res.status(500).json({Error:"Error to add university"})

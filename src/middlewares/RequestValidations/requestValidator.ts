@@ -119,7 +119,7 @@ export const AddUniversityValidation = [
 
 export const AddCollegeValidation = [
   // College fields
-  body('nameCollege')
+  body('name')
     .notEmpty()
     .withMessage('College name is required')
     .isString()
@@ -135,7 +135,7 @@ export const AddCollegeValidation = [
       }
     }),
 
-  body('locationCollege')
+  body('location')
     .notEmpty()
     .withMessage('College location is required')
     .isString()
@@ -143,7 +143,7 @@ export const AddCollegeValidation = [
     .trim()
     .escape(),
 
-  body('descriptionCollege')
+  body('description')
     .notEmpty()
     .withMessage('College description is required')
     .isString()
@@ -152,7 +152,7 @@ export const AddCollegeValidation = [
     .escape(),
 
   // Director fields
-  body('nameDir')
+  body('firstName')
     .notEmpty()
     .withMessage('Director name is required')
     .isString()
@@ -188,6 +188,17 @@ export const AddCollegeValidation = [
     .optional()
     .isMobilePhone('any')
     .withMessage('Phone must be a valid mobile number'),
+    body("dateOfBirth")
+    .notEmpty()
+    .withMessage('Date of birth required')
+    .isDate()
+    .withMessage('Date of birth is not date')
+    .escape(),
+    body("jobTitle")
+    .notEmpty()
+    .withMessage('Job title required')
+
+
 ];
 
 
