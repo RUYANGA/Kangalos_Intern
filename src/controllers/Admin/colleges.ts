@@ -54,7 +54,7 @@ export async function AddCollege(req:Request<{id:string},{},AddCollege>,res:Resp
             }
         })
 
-        return res.status(201).json({
+        res.status(201).json({
         message: 'College created successfully',
         college,
         });

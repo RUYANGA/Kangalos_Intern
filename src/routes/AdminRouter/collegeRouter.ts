@@ -1,12 +1,13 @@
 import { Router } from "express";
 import {AddCollege} from '../../controllers/Admin/colleges'
-import{AddCollegeValidation} from '../../middlewares/RequestValidations/requestValidator'
-import {validateRequest} from '../../middlewares/RequestValidations/validates'
+
+import {AddCollegeSchema} from '../../middlewares/zod/college'
+import{zodValidate} from '../../middlewares/Auth/zodValidaate'
 
 const router=Router();
 
 
-router.post('/admin/addcollege/:id',AddCollegeValidation,validateRequest,AddCollege)
+router.post('/admin/addcollege/:id',zodValidate(AddCollegeSchema),AddCollege)
 
 
 export default router

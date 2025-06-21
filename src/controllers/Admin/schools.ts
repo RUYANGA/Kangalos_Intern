@@ -1,14 +1,27 @@
 import { Request,Response,NextFunction } from "express";
 import {prisma} from '../../prisma/prisma'
-import {AddCollege} from '../../types/dataTypes'
+import {AddSchool} from '../../types/dataTypes'
 import bcrypt from 'bcrypt'
 
-export async function addSchool(req:Request<{id:string},{},AddCollege>,res:Response,next:NextFunction):Promise<any>{
+export async function addSchool(req:Request<{id:string},{},AddSchool>,res:Response,next:NextFunction):Promise<any>{
 
     try {
-        const {name,location,description,firstName,lastName,email,password,gender,phone,dateOfBirth,jobTitle}=req.body;
+        const {name,description,firstName,lastName,email,password,gender,phone,dateOfBirth,jobTitle}=req.body;
 
         const collegeId=req.params.id
+
+        if(!collegeId){
+            return res.status(400).json({Error:"College id not provided"})
+        }
+
+        const existCollage=await prisma.college.findUnique({
+            where:{
+                id:collegeId
+            }
+        })
+        if(!existCollage){
+            return res.status(404).json({Error:"College to add school not found"})
+        }
 
          const parsedDate = new Date(dateOfBirth);
         
@@ -16,6 +29,8 @@ export async function addSchool(req:Request<{id:string},{},AddCollege>,res:Respo
             return res.status(400).json({ error: "Invalid date "})
         }
         const hashedPassword = await bcrypt.hash(password, 12);
+
+        
 
         const school= await prisma.school.create({
             data:{
@@ -51,13 +66,13 @@ export async function addSchool(req:Request<{id:string},{},AddCollege>,res:Respo
                 dean:true
             }
         })
-        return res.status(201).json({
+        res.status(201).json({
         message: 'School created successfully',
         school,
         });
 
     } catch (error) {
         console.log(error)
-        res.status(500).json({Error:"Error to add school"})
+        res.status(500).json({Error:"Error to add school",error})
     }
 }

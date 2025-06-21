@@ -2,10 +2,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import express ,{Request,Response,NextFunction} from "express";
-import userRoutes from '../src/routes/UserRoutes'
 import cors from 'cors'
+
+
+import userRoutes from '../src/routes/UserRoutes'
 import universityRoutes from './routes/AdminRouter/universityRouter'
 import collegeRoutes from './routes/AdminRouter/collegeRouter'
+import schoolRouter from './routes/AdminRouter/schoolRouter'
 
 
 const port=process.env.PORT||2000
@@ -27,6 +30,7 @@ app.use(cors({
 app.use(userRoutes)
 app.use(universityRoutes)
 app.use(collegeRoutes)
+app.use(schoolRouter)
 
 
 

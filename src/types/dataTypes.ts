@@ -50,3 +50,25 @@ export type AddCollege={
 
 
 }
+
+export type AddSchool={
+    name:string,
+    description:string,
+    firstName:string,
+    lastName:string,
+    email:string,
+    password:string,
+    gender:string,
+    phone:string,
+    dateOfBirth:Date,
+    jobTitle:string
+}
+
+interface ValidationErrorPayload {
+  errors: {
+    message: string;
+    field?: string;
+    in?: string;
+    value?: unknown;
+  }[];
+}

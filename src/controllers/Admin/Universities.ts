@@ -15,7 +15,7 @@ export async function AddUniversity(req:Request<{},{},UniversityInput>,res:Respo
                 location
             }
         })
-        return res.status(201).json({
+        res.status(201).json({
         message: 'Unversity created successfully',
         unversity,
         });

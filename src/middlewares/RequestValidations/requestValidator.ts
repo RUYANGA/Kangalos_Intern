@@ -41,6 +41,7 @@ export const signUp_Validation=[
                     'User with email existing'
                 )
             }
+            return true
         })
     }),
     body("password")
@@ -80,6 +81,7 @@ export const resendOtp_validation=[
                     'Email already verified'
                 )
             }
+            return true
 
         })
     })
@@ -99,6 +101,7 @@ export const AddUniversityValidation = [
       if (uni) {
         return Promise.reject('University with this name already exists');
       }
+      return true
     }),
 
   body('location')
@@ -133,6 +136,7 @@ export const AddCollegeValidation = [
             'College with this name already exists'
         );
       }
+      return true
     }),
 
   body('location')
@@ -171,6 +175,7 @@ export const AddCollegeValidation = [
       if (user) {
         return Promise.reject('Email is already in use');
       }
+      return true
     }),
 
   body('gender')
@@ -203,64 +208,73 @@ export const AddCollegeValidation = [
 
 
 export const AddSchoolValidation = [
-  // 🔹 School name — now checks uniqueness
+  // 🔹 School name — required + unique
   body('name')
     .notEmpty().withMessage('School name is required')
     .trim()
     .escape()
     .custom(async (value) => {
-      const existingSchool = await prisma.school.findUnique({
-        where: { name: value },
-      });
-      if (existingSchool) {
-        return Promise.reject('A school with this name already exists');
-      }
+      const existingSchool = await prisma.school.findUnique({ where: { name: value } });
+      if (existingSchool) throw new Error('A school with this name already exists');
+      return true;
     }),
 
-  // 🔹 School location
-  body('location')
-    .notEmpty().withMessage('School location is required')
-    .trim()
-    .escape(),
-
-  // 🔹 School description
+  // 🔹 School description — required
   body('description')
     .notEmpty().withMessage('School description is required')
     .trim()
     .escape(),
 
-  // 🔹 Dean details
-  body('nameDean')
-    .notEmpty().withMessage("Dean's name is required")
+  // 🔹 Dean’s first name
+  body('firstName')
+    .notEmpty().withMessage("Dean's first name is required")
     .trim()
     .escape(),
 
+  // 🔹 Dean’s last name
+  body('lastName')
+    .notEmpty().withMessage("Dean's last name is required")
+    .trim()
+    .escape(),
+
+  // 🔹 Email — required, valid, unique
   body('email')
     .notEmpty().withMessage("Dean's email is required")
-    .isEmail().withMessage('Must be a valid email')
+    .isEmail().withMessage('Invalid email format')
     .normalizeEmail()
     .custom(async (value) => {
       const user = await prisma.user.findUnique({ where: { email: value } });
-      if (user) {
-        return Promise.reject('Email is already in use');
-      }
+      if (user) throw new Error('Email is already in use');
+      return true;
     }),
 
+  // 🔹 Gender — Male or Female
   body('gender')
     .notEmpty().withMessage('Gender is required')
-    .isIn(['Male', 'Female']).withMessage('Gender must be Male or Female'),
+    .isIn(['Male', 'Female']).withMessage('Gender must be "Male" or "Female"'),
 
-  body("password")
-    .notEmpty()
-    .withMessage('Password is required')
-    .isLength({ min: 5 })
-    .withMessage('Password must be at least 5 characters'),
+  // 🔹 Password — min 5 chars
+  body('password')
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 5 }).withMessage('Password must be at least 5 characters'),
 
+  // 🔹 Phone — optional, but must be valid if provided
   body('phone')
-    .optional()
-    .isMobilePhone('any').withMessage('Phone must be a valid mobile number'),
-];
+    .optional({ checkFalsy: true })
+    .isMobilePhone('any').withMessage('Invalid phone number format'),
 
+  // 🔹 Date of birth — ISO string, must be a valid date
+  body('dateOfBirth')
+    .notEmpty().withMessage('Date of birth is required')
+    .isISO8601().withMessage('Date must be in ISO8601 format (YYYY-MM-DD)')
+    .toDate(),
+
+  // 🔹 Job title — required
+  body('jobTitle')
+    .notEmpty().withMessage("Dean's job title is required")
+    .trim()
+    .escape()
+];
 
 export const AddDepartmentValidation = [
   // Department fields
