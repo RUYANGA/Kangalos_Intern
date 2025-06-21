@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {addSchool,AddSchoolDean} from '../../controllers/Users/PrincipalController/principal'
+import {addSchool,AddSchoolDean} from '../../controllers/Admin/PrincipalController/principal'
 
 
 import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'

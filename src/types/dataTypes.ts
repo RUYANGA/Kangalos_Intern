@@ -1,3 +1,4 @@
+import { AddCollege } from "../controllers/Admin/colleges";
 
 export type UserInput = {
   email: string;
@@ -6,7 +7,8 @@ export type UserInput = {
   gender: string;
   firstName:string,
   lastName:string,
-  phone:string
+  phone:string,
+  dateOfBirth:Date
 };
 
 export type ResendOtpInput={
@@ -26,3 +28,24 @@ export type ResendOtpInput={
 export type FogetEmail={
     email:string
 };
+
+export type UniversityInput={
+    name:string,
+    description:string,
+    location:string
+}
+
+export type AddCollege={
+    name:string,
+    description:string,
+    location:string,
+    firstName:string,
+    lastName:string,
+    email:string,
+    password:string,
+    gender:string,
+    phone:string,
+    dateOfBirth:Date
+
+
+}

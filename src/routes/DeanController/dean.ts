@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {addHodSchool,addDepartment} from '../../controllers/Users/DeanController/dean';
+import {addHodSchool,addDepartment} from '../../controllers/Admin/DeanController/dean';
 
 import {AuthorizeRoles } from '../../middlewares/Auth/TokenVerify'
 

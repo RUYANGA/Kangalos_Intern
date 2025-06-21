@@ -50,7 +50,14 @@ export const signUp_Validation=[
     .withMessage('Password length must be at least 5 character'),
     body("gender")
     .notEmpty()
-    .withMessage('Gender required !')
+    .withMessage('Gender required !'),
+    body("dateOfBirth")
+    .notEmpty()
+    .withMessage('Date of birth required')
+    .isDate()
+    .withMessage('Date of birth is not date')
+    .escape()
+    
 ];
 
 export const resendOtp_validation=[

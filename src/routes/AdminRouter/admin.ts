@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/Users/AdminController/admin'
+import {AddUniversity ,AddSchool,AddCollege,addDepartment,getUniversity,getCollege}from '../../controllers/Admin/AdminController/admin'
 
 //import { validateBody } from "../../middlewares/RequestValidations/validates";
 //import {  AddUniversityFlatSchema ,AddCollegeSchema} from "../../middlewares/RequestValidations/requestValidator";
@@ -12,7 +12,7 @@ import {AuthorizeRoles, AuthorizTeam} from '../../middlewares/Auth/TokenVerify'
 
 
 import { add } from "date-fns";
-import { addSchool } from "../../controllers/Users/PrincipalController/principal";
+import { addSchool } from "../../controllers/Admin/PrincipalController/principal";
 
 import {AddUniversityValidation,AddCollegeValidation,AddSchoolValidation,AddDepartmentValidation} from '../../middlewares/RequestValidations/requestValidator'
 import {validateRequest} from '../../middlewares/RequestValidations/validates'

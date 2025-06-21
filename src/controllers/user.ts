@@ -18,7 +18,13 @@ export async function Register(req:Request<{},{},UserInput>,res:Response,next:Ne
     try {
        
     
-        const{firstName,lastName,phone,email,gender,password}=req.body;
+        const{firstName,lastName,phone,email,gender,password,dateOfBirth}=req.body;
+
+        const parsedDate = new Date(dateOfBirth);
+
+        if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({ error: "Invalid date format" });
+        }
     
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp=addMinutes(new Date(),15)
@@ -29,6 +35,7 @@ export async function Register(req:Request<{},{},UserInput>,res:Response,next:Ne
             data:{
                 firstName,
                 lastName,
+                dateOfBirth:parsedDate,
                 email,
                 password,
                 phone,
