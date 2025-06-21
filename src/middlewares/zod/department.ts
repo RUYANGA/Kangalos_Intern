@@ -28,11 +28,17 @@ export const AddDepartmentSchema = z.object({
   phone: z.string().refine((val) => !val || z.string().regex(/^\+?\d{6,15}$/).safeParse(val).success,
       { message: 'Invalid phone number format' }),
 
-  dateOfBirth: z.string()
-    .refine((val) => !isNaN(new Date(val).getTime()), {
-      message: 'Date must be in ISO8601 format (YYYY-MM-DD)',
-    })
-    .transform((val) => new Date(val)),
+  dateOfBirth: z.preprocess(
+  (val) => {
+    if (val instanceof Date) return val;
+    if (typeof val === 'string') return new Date(val);
+    return val; 
+  },
+  z.date({ required_error: 'Date of birth is required', invalid_type_error: 'Invalid date format' })
+).refine(
+  (d) => !isNaN(d.getTime()),
+  { message: 'Invalid date format' }
+),
 
   jobTitle: z.string().trim().min(1, "Dean's job title is required"),
 });

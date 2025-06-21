@@ -20,7 +20,7 @@ export async function addSchool(req:Request<{id:string},{},AddSchoolDto>,res:Res
         const collegeId=req.params.id
 
         if(!collegeId){
-            return res.status(400).json({Error:"College id not provided"})
+            throw new Error("College id not provided")
         }
 
         const existCollage=await prisma.college.findUnique({
@@ -29,7 +29,7 @@ export async function addSchool(req:Request<{id:string},{},AddSchoolDto>,res:Res
             }
         })
         if(!existCollage){
-            return res.status(404).json({Error:"College to add school not found"})
+            throw new Error("College to add school not found")
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
@@ -49,7 +49,7 @@ export async function addSchool(req:Request<{id:string},{},AddSchoolDto>,res:Res
                     create:{
                         firstName:data.firstName,
                         lastName:data.lastName,
-                        dateOfBirth:data.dateOfBirth,
+                        dateOfBirth:new Date(data.dateOfBirth),
                         email:data.email,
                         password:hashedPassword,
                         gender:data.gender,

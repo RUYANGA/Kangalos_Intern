@@ -76,7 +76,4 @@ export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto
         console.log(error)
         res.status(500).json({Error:"Error to add department",error})
     }
-
-
-
 }
