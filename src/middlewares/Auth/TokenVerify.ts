@@ -59,7 +59,7 @@ export const AuthorizTeam= (allowedRoles:string[]) => {
       if (!user) return res.status(404).json({ message: 'User not found' });
 
       // Check if user's role is allowed
-      if (!allowedRoles.includes(user.roleInTeam)) {
+      if (!allowedRoles.includes(user.role)) {
         return res.status(403).json({ message: 'Access denied: insufficient permissions' });
       }
 

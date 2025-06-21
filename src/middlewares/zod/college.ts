@@ -44,7 +44,7 @@ export const AddCollegeSchema = z.object({
   password: z.string().min(5, 'Password must be at least 5 characters'),
 
   phone: z.string().refine((val) => !val || z.string().regex(/^\+?\d{6,15}$/).safeParse(val).success,
-      { message: 'Invalid phone number format' }),
+  { message: 'Invalid phone number format' }),
 
   dateOfBirth: z.string()
     .refine((val) => !isNaN(new Date(val).getTime()), {

@@ -16,5 +16,4 @@ export const ResendOtpZ = z.object({
     }, { message: 'User with email not found' }),
 });
 
-// Alias
 export type ResendOtpDto = z.infer<typeof ResendOtpZ>;

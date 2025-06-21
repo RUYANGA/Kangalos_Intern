@@ -3,6 +3,7 @@ import { prisma } from '../../prisma/prisma';
 
 
 export const LoginZ = z.object({
+
   email: z
     .string()
     .email('Invalid email format')
@@ -19,6 +20,7 @@ export const LoginZ = z.object({
   password: z
     .string()
     .min(1, 'Password required!'),
+    
 });
 
 export type LoginDto = z.infer<typeof LoginZ>;

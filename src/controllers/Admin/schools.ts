@@ -1,12 +1,21 @@
 import { Request,Response,NextFunction } from "express";
 import {prisma} from '../../prisma/prisma'
-import {AddSchool} from '../../types/dataTypes'
 import bcrypt from 'bcrypt'
+import { AddSchoolDto, AddSchoolSchema } from "../../middlewares/zod/school";
 
-export async function addSchool(req:Request<{id:string},{},AddSchool>,res:Response,next:NextFunction):Promise<any>{
+export async function addSchool(req:Request<{id:string},{},AddSchoolDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
-        const {name,description,firstName,lastName,email,password,gender,phone,dateOfBirth,jobTitle}=req.body;
+
+        const result = await AddSchoolSchema.safeParseAsync(req.body);
+
+        if (!result.success) {
+        return res.status(400).json({
+            errors: result.error.format(),
+        });
+        }
+
+        const data: AddSchoolDto = result.data; 
 
         const collegeId=req.params.id
 
@@ -23,19 +32,14 @@ export async function addSchool(req:Request<{id:string},{},AddSchool>,res:Respon
             return res.status(404).json({Error:"College to add school not found"})
         }
 
-         const parsedDate = new Date(dateOfBirth);
-        
-        if (isNaN(parsedDate.getTime())) {
-            return res.status(400).json({ error: "Invalid date "})
-        }
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const hashedPassword = await bcrypt.hash(data.password, 12);
 
         
 
         const school= await prisma.school.create({
             data:{
-                name,
-                description,
+                name:data.name,
+                description:data.description,
                 college:{
                     connect:{
                         id:collegeId
@@ -43,16 +47,16 @@ export async function addSchool(req:Request<{id:string},{},AddSchool>,res:Respon
                 },
                 dean:{
                     create:{
-                        firstName,
-                        lastName,
-                        dateOfBirth:parsedDate,
-                        email,
+                        firstName:data.firstName,
+                        lastName:data.lastName,
+                        dateOfBirth:data.dateOfBirth,
+                        email:data.email,
                         password:hashedPassword,
-                        gender,
-                        phone,
+                        gender:data.gender,
+                        phone:data.phone,
                         staffProfile:{
                             create:{
-                                jobTitle
+                                jobTitle:data.jobTitle
                             }
                         },
                         role:'DEAN'
