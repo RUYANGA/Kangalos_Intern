@@ -7,7 +7,7 @@ import {AuthorizeRoles} from '../../middlewares/Auth/TokenVerify'
 const router=Router();
 
 
-router.post('/admin/addcollege/:id',zodValidate(AddCollegeSchema),AuthorizeRoles(['ADMIN','PRINCIPAL']),AddCollege)
+router.post('/admin/addcollege/:id',AuthorizeRoles(['ADMIN','PRINCIPAL']),zodValidate(AddCollegeSchema),AddCollege)
 
 
 export default router

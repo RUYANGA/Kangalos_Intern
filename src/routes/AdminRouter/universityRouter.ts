@@ -9,7 +9,7 @@ import {zodValidate} from '../../middlewares/Auth/zodValidaate'
 const router=Router();
 
 
-router.post('/admin/adduniversity',zodValidate(AddUniversitySchema),AuthorizeRoles(['ADMIN']),AddUniversity)
+router.post('/admin/adduniversity',AuthorizeRoles(['ADMIN']),zodValidate(AddUniversitySchema),AddUniversity)
 
 
 export default router
