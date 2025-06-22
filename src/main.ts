@@ -35,8 +35,9 @@ app.use(schoolRouter)
 
 
 app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
-    res.status(500).json({Error: 'Something went wronge, Try again'})
     console.log(error.message)
+    res.status(500).json({Error: 'Something went wronge, Try again'})
+    
     return
 })
 
