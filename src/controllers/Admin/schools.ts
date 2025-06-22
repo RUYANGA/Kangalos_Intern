@@ -6,30 +6,20 @@ import { AddSchoolDto, AddSchoolSchema } from "../../middlewares/zod/school";
 export async function addSchool(req:Request<{id:string},{},AddSchoolDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
-
         const result = await AddSchoolSchema.safeParseAsync(req.body);
-
         if (!result.success) {
-        return res.status(400).json({
-            errors: result.error.format(),
-        });
+            return res.status(400).json({ errors: result.error.flatten().fieldErrors });
+        }
+        const data = result.data;
+
+        const collegeId = req.params.id;
+        if (!collegeId) {
+            return res.status(400).json({ error: 'College id not provided' });
         }
 
-        const data: AddSchoolDto = result.data; 
-
-        const collegeId=req.params.id
-
-        if(!collegeId){
-            res.status(400).json("College id not provided")
-        }
-
-        const existCollage=await prisma.college.findUnique({
-            where:{
-                id:collegeId
-            }
-        })
-        if(!existCollage){
-            res.status(400).json("College to add school not found")
+        const college = await prisma.college.findUnique({ where: { id: collegeId } });
+        if (!college) {
+            return res.status(404).json({ error: 'College not found' });
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
