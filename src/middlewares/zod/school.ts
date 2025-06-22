@@ -1,19 +1,17 @@
+// src/middlewares/zod/AddSchoolSchema.ts
 import { z } from 'zod';
 import { prisma } from '../../prisma/prisma';
 
 const phoneRegex = /^\+?\d{6,15}$/;
 
 export const AddSchoolSchema = z.object({
-  // School fields
   name: z.string().trim().min(1, 'School name is required'),
-
   description: z.string().trim().min(1, 'School description is required'),
 
-  // Dean fields
   firstName: z.string().trim().min(1, "Dean's first name is required"),
-  lastName : z.string().trim().min(1, "Dean's last name is required"),
+  lastName: z.string().trim().min(1, "Dean's last name is required"),
 
-  email: z.string().email('Invalid email format'),
+  email: z.string().trim().email('Invalid email format'),
 
   gender: z.enum(['Male', 'Female'], {
     required_error: 'Gender is required',
@@ -33,8 +31,7 @@ export const AddSchoolSchema = z.object({
   ).refine((d) => !isNaN(d.getTime()), { message: 'Invalid date format' }),
 
   jobTitle: z.string().trim().min(1, "Dean's job title is required"),
-})
-.superRefine(async (data, ctx) => {
+}).superRefine(async (data, ctx) => {
   const [school, user] = await Promise.all([
     prisma.school.findFirst({ where: { name: data.name } }),
     prisma.user.findUnique({ where: { email: data.email } }),
