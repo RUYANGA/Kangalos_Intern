@@ -13,13 +13,11 @@ export async function addSchool(
     const result= await AddSchoolSchema.safeParseAsync(req.body);
  
     if (!result.success) {
-    const flattenedErrors = result.error.flatten();
-    
-    // Defensive fallback to avoid undefined .map
-    const fieldErrors = flattenedErrors.fieldErrors ?? {};
-    
-    return res.status(400).json({ errors: fieldErrors });
+    const formattedErrors = result.error.format();
+    console.log('Formatted errors:', formattedErrors);
+    return res.status(400).json({ errors: formattedErrors });
     }
+
 
 
     const data = result.data;
