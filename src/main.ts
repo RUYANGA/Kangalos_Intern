@@ -35,7 +35,7 @@ app.use(schoolRouter)
 
 
 app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
-    res.status(500).json({Error: 'Som/user/registerething went wronge, Try again'})
+    res.status(500).json({Error: 'Something went wronge, Try again'})
     console.log(error.message)
     return
 })
