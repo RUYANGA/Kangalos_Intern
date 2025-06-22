@@ -12,11 +12,15 @@ export async function addSchool(
   try {
     const result= await AddSchoolSchema.safeParseAsync(req.body);
  
-    if(!result.success){
-        return res.status(400).json({
-            error:result.error.format()
-        })
+    if (!result.success) {
+    const flattenedErrors = result.error.flatten();
+    
+    // Defensive fallback to avoid undefined .map
+    const fieldErrors = flattenedErrors.fieldErrors ?? {};
+    
+    return res.status(400).json({ errors: fieldErrors });
     }
+
 
     const data = result.data;
     const collegeId = req.params.id;
