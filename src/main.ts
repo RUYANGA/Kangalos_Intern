@@ -34,26 +34,12 @@ app.use(schoolRouter)
 
 
 
-// app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
-//     console.log(error.message)
-//     res.status(500).json({Error: 'Something went wronge, Try again'})
+app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
+    console.log(error.message)
+    res.status(500).json({Error: 'Something went wronge, Try again'})
     
-//     return
-// })
-
-app.use((err: any, req:Request, res: Response, next: NextFunction) => {
-  console.error('Global error handler:', err);
-
-  // If this came from Zod
-  if (err?.errors && Array.isArray(err.errors)) {
-    res.status(400).json({ errors: err.errors });
-  }
-
-   res.status(500).json({
-    error: err?.message || 'Internal server error',
-  });
-});
-
+    return
+})
 
 
 app.listen(port,()=>{

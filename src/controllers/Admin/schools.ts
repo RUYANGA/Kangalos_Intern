@@ -11,11 +11,14 @@ export async function addSchool(
 ): Promise<any> {
   try {
     const result = await AddSchoolSchema.safeParseAsync(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        errors: result.error.flatten().fieldErrors,
-      });
-    }
+   
+if (!result.success) {
+  const errors = result.error.flatten().fieldErrors;
+  
+  return res.status(400).json({
+    errors,
+  });
+}
 
     const data = result.data;
     const collegeId = req.params.id;
