@@ -13,10 +13,13 @@ export async function addSchool(
     const result= await AddSchoolSchema.safeParseAsync(req.body);
  
     if (!result.success) {
-    const formattedErrors = result.error.format();
-    console.log('Formatted errors:', formattedErrors);
-    return res.status(400).json({ errors: formattedErrors });
+    const flattened = result.error.flatten();
+    const normalizedErrors = Object.fromEntries(
+        Object.entries(flattened.fieldErrors).map(([key, val]) => [key, val ?? []])
+    );
+    return res.status(400).json({ errors: normalizedErrors });
     }
+
 
 
 
