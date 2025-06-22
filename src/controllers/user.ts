@@ -5,7 +5,11 @@ import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
 import {sendEmail,forgetPassword1} from'../util/nodemailer'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import {LoginInput, ResendOtpInput, UserInput, VerifyInput,FogetEmail} from '../types/dataTypes'
+import { ResendOtpInput,FogetEmail} from '../types/dataTypes'
+import { VerifyOtpZ,VerifyOtpDto} from '../middlewares/zod/verifyOtp'
+import { LoginDto, LoginZ } from '../middlewares/zod/userLogin'
+import { SignUpDto, SignUpZ } from '../middlewares/zod/userRegister'
+
 
 
 const prisma=new PrismaClient()
@@ -13,14 +17,22 @@ const JWT_KEY=process.env.JWTKEY || 'jkdsdfguyi90uy7tryfdfchvbhjuhigy' as string
 const tokenkey=process.env.TOKEN_KEY || 'oiuytrdfghjkopiuygyf' as string;
 
 
-export async function Register(req:Request<{},{},UserInput>,res:Response,next:NextFunction):Promise<any>{
+export async function Register(req:Request<{},{},SignUpDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
        
     
-        const{firstName,lastName,phone,email,gender,password,dateOfBirth}=req.body;
+        const result= await SignUpZ.safeParseAsync(req.body)
 
-        const parsedDate = new Date(dateOfBirth);
+        if(!result.success){
+            return res.status(400).json({
+                error:result.error.format()
+            })
+        }
+
+        const data:SignUpDto=result.data
+
+        const parsedDate = new Date(data.dateOfBirth);
 
         if (isNaN(parsedDate.getTime())) {
         return res.status(400).json({ error: "Invalid date format" });
@@ -29,17 +41,17 @@ export async function Register(req:Request<{},{},UserInput>,res:Response,next:Ne
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp=addMinutes(new Date(),15)
     
-        const hashPassword=await bcrypt.hash(password,12)     
+        const hashPassword=await bcrypt.hash(data.password,12)     
     
         const user=await prisma.user.create({
             data:{
-                firstName,
-                lastName,
+                firstName:data.firstName,
+                lastName:data.lastName,
                 dateOfBirth:parsedDate,
-                email,
-                password,
-                phone,
-                gender,
+                email:data.email,
+                password:hashPassword,
+                phone:data.phone,
+                gender:data.gender,
 
             }
         })
@@ -54,12 +66,12 @@ export async function Register(req:Request<{},{},UserInput>,res:Response,next:Ne
     
         sendEmail(user.email,otp,user.firstName)//Send otp to email
     
-        res.status(201).json({Message:`User registered verify otp send to ${email} `})
+        res.status(201).json({Message:`User registered verify otp send to ${data.email} `})
         
     } catch (error) {
 
         console.log(error)
-        return res.status(500).json({Error:'Error to register user '})
+        return res.status(500).json({Error:'Error to register user ',error})
     }
 };
 
@@ -98,15 +110,24 @@ export async function resendOtp(req:Request<{},{},ResendOtpInput>,res:Response,n
    }
 };
 
-export async function verifyOtp(req:Request<{},{},VerifyInput>,res:Response,next:NextFunction):Promise<any>{
+export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,next:NextFunction):Promise<any>{
 
    try {
 
-       
-        const {email,otp}=req.body;
+        const result= await VerifyOtpZ.safeParseAsync(req.body);
+
+        if(!result.success){
+            return res.status(400).json({
+                error:result.error.format()
+            })
+        }
+
+        const data:VerifyOtpDto=result.data
+
+        console.log(data.otp)
 
         const user=await prisma.user.findUnique({
-            where:{email:email}
+            where:{email:data.email}
         })
 
         const foundOtp=await prisma.otp.findUnique({
@@ -115,10 +136,9 @@ export async function verifyOtp(req:Request<{},{},VerifyInput>,res:Response,next
 
         if(!foundOtp)return res.status(404).json('Otp not found')
 
-        if(foundOtp?.code !== otp){
-
-            return res.status(401).json({Error:'Invalid Otp'})
-
+        if (String(foundOtp.code) !== data.otp.trim()) {
+          return res.status(401).json({ error: 'Invalid Otp' });
+        
         }else if(foundOtp.expiredDate < new Date()){
 
             return res.status(404).json('Otp expired date')
@@ -147,20 +167,28 @@ export async function verifyOtp(req:Request<{},{},VerifyInput>,res:Response,next
 }
 
 
-export async function Login(req:Request<{},{},LoginInput>,res:Response,next:NextFunction):Promise<any>{
+export async function Login(req:Request<{},{},LoginDto>,res:Response,next:NextFunction):Promise<any>{
 
    try {
        
 
-        const{email,password}=req.body;
+        const result =await LoginZ.safeParseAsync(req.body)
+
+        if(!result.success){
+            return res.status(400).json({
+                error:result.error.format()
+            })
+        }
+
+        const data:LoginDto=result.data
 
         const user=await prisma.user.findUnique({
-            where:{email:email}
+            where:{email:data.email}
         })
 
         if(!user) return
 
-        if(!await bcrypt.compare(password,user?.password)){
+        if(!await bcrypt.compare(data.password,user?.password)){
             return res.status(404).json({Error:"Email or password is incorrect!"});
         }
 
@@ -181,7 +209,7 @@ export async function Login(req:Request<{},{},LoginInput>,res:Response,next:Next
 
         
    } catch (error) {
-       //console.log(error)
+       console.log(error)
        return res.status(500).json({Error:'Error to login, try again '})
    }
 

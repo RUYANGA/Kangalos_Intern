@@ -12,8 +12,8 @@ import {ResendOtpZ} from '../../middlewares/zod/resendOtp'
 const router=Router()
 
 router.post('/user/register',zodValidate(SignUpZ),Register);
-router.post('/user/resendOtp',zodValidate(VerifyOtpZ),resendOtp);
-router.post('/user/verifyOtp',zodValidate(ResendOtpZ),verifyOtp);
+router.post('/user/resendOtp',zodValidate(ResendOtpZ),resendOtp);
+router.post('/user/verifyOtp',zodValidate(VerifyOtpZ),verifyOtp);
 router.post('/user/login',zodValidate(LoginZ),Login);
 router.post('/user/forget-password',forgetPassword);
 router.post('/user/rest-password',resetPassword)
