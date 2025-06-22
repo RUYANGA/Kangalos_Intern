@@ -10,15 +10,13 @@ export async function addSchool(
   next: NextFunction
 ): Promise<any> {
   try {
-    const result = await AddSchoolSchema.safeParseAsync(req.body);
-   
-if (!result.success) {
-  const errors = result.error.flatten().fieldErrors;
-  
-  return res.status(400).json({
-    errors,
-  });
-}
+    const result= await AddSchoolSchema.safeParseAsync(req.body);
+ 
+    if(!result.success){
+        return res.status(400).json({
+            error:result.error.format()
+        })
+    }
 
     const data = result.data;
     const collegeId = req.params.id;
