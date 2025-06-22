@@ -133,6 +133,7 @@ model User {
   @@index([email])
   @@index([role])
   @@index([status])
+  @@map("User")
 }
 
 model Student {
