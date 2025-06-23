@@ -34,6 +34,11 @@ app.use(schoolRouter)
 
 
 
+app.get('/', (req:Request, res:Response) => {
+  res.send('Kangalos backend is running ✅');
+});
+
+
 app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
     console.log(error.message)
     res.status(500).json({Error: 'Something went wronge, Try again'})
