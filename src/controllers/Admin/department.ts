@@ -4,7 +4,7 @@ import { prisma } from "../../prisma/prisma";
 import bcrypt from 'bcrypt'
 
 
-export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto>,res:Response,next:NextFunction){
+export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
 
