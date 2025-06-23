@@ -28,7 +28,7 @@ export const AddDepartmentSchema = z.object({
   phone: z.string().refine((val) => !val || z.string().regex(/^\+?\d{6,15}$/).safeParse(val).success,
       { message: 'Invalid phone number format' }),
 
- dateOfBirth: z.preprocess(
+   dateOfBirth: z.preprocess(
     (val) => {
       if (val instanceof Date) return val;
       if (typeof val === 'string') {

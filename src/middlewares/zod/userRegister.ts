@@ -37,7 +37,7 @@ export const SignUpZ = z.object({
     invalid_type_error: 'Gender must be "Male" or "Female"',
   }),
 
- dateOfBirth: z.preprocess(
+  dateOfBirth: z.preprocess(
     (val) => {
       if (val instanceof Date) return val;
       if (typeof val === 'string') {

@@ -26,7 +26,7 @@ export const AddCollegeSchema = z
         message: "Invalid phone number format",
       }),
 
-    dateOfBirth: z.preprocess(
+      dateOfBirth: z.preprocess(
     (val) => {
       if (val instanceof Date) return val;
       if (typeof val === 'string') {
