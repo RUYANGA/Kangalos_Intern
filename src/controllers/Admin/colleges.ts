@@ -115,7 +115,7 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-        error: 'Error adding school',
+        error: 'Error get school',
         });
 
     }

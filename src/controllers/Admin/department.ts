@@ -77,3 +77,29 @@ export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto
         res.status(500).json({Error:"Error to add department",error})
     }
 }
+
+export async function getDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+
+        const department=await prisma.department.findMany({
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                programs:true,
+                hod:true,
+            }
+        });
+
+        res.status(200).json({
+            message:'Department get successfully',
+            department:department
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({Error:"Error to get department",error})
+    }
+
+}
