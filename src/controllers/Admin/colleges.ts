@@ -1,6 +1,7 @@
 import { NextFunction, Request,Response } from "express";
 import {AddCollege} from '../../types/dataTypes'
 import {prisma} from '../../prisma/prisma'
+import { Prisma } from "@prisma/client";
 import bcrypt from 'bcrypt'
 import {AddCollegeSchema,AddCollegeDto} from '../../middlewares/zod/college'
 import { error } from "console";
@@ -76,9 +77,20 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
         college,
         });
         
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({Error:"Error to add college",error})
+    }catch (error: any) {
+    console.error("AddCollege error:", error);
+
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2025") {
+      return res.status(404).json({ error: "University not found" });
     }
+  }
+
+  return res.status(500).json({
+    error: "Internal server error",
+    message: error.message || error,
+  });
+}
+
 
 }
