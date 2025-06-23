@@ -49,8 +49,16 @@ export async function AddProgram(req:Request<{id:string},{},AddProgramDto>,res:R
                 
             }
         })
+
+        res.status(201).json({
+            message:'Program created successfully',
+            program
+        })
         
     } catch (error) {
+
+        console.log(error)
+        res.status(500).json({Error:"Error to add progarm",error})
         
     }
 
