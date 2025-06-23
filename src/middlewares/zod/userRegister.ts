@@ -36,32 +36,17 @@ export const SignUpZ = z.object({
     required_error: 'Gender required !',
     invalid_type_error: 'Gender must be "Male" or "Female"',
   }),
-
- dateOfBirth: z.preprocess(
+dateOfBirth: z.preprocess(
   (val) => {
     if (val instanceof Date) return val;
-
-    if (typeof val === 'string') {
-      // Accept both formats: "DD-MM-YYYY" and "DD/MM/YYYY"
-      const normalized = val.replace(/\//g, '-'); // unify the separator
-      const [day, month, year] = normalized.split('-');
-      
-      // Check if it's a valid day/month/year
-      if (!day || !month || !year) return val;
-
-      // Convert to ISO format (YYYY-MM-DD)
-      return new Date(`${year}-${month}-${day}`);
-    }
-
-    return val;
+    if (typeof val === 'string') return new Date(val);
+    return val; 
   },
-  z.date({
-    required_error: 'Date of birth is required',
-    invalid_type_error: 'Invalid date format. Use DD-MM-YYYY or DD/MM/YYYY',
-  })
-).refine((d) => !isNaN(d.getTime()), {
-  message: 'Invalid date value',
-}),
+  z.date({ required_error: 'Date of birth is required', invalid_type_error: 'Invalid date format' })
+).refine(
+  (d) => !isNaN(d.getTime()),
+  { message: 'Invalid date format' }
+),
 });
 
 // Handy TypeScript alias for controllers / services
