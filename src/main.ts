@@ -11,7 +11,7 @@ import collegeRoutes from './routes/AdminRouter/collegeRouter'
 import schoolRouter from './routes/AdminRouter/schoolRouter'
 
 
-const port=process.env.PORT||2000
+const port=process.env.PORT||1000
 
 
 
