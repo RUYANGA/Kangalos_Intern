@@ -81,3 +81,28 @@ export async function addSchool(
     });
   }
 }
+
+export async function getSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
+  try {
+
+    const school=await prisma.school.findMany({
+      select:{
+        id:true,
+        name:true,
+        description:true,
+        dean:true
+      }
+    });
+
+    res.status(200).json({
+      message:'School get successfully',
+      school:school
+    })
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: 'Error get school',
+    });
+  }
+}
