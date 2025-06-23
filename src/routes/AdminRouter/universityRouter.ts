@@ -1,15 +1,16 @@
 import { Router } from "express";
-import {AddUniversity} from '../../controllers/Admin/Universities';
+import {AddUniversity,getUniversity} from '../../controllers/Admin/Universities';
 import {AuthorizeRoles} from '../../middlewares/Auth/TokenVerify'
-
-
 import {AddUniversitySchema }from '../../middlewares/zod/university'
 import {zodValidate} from '../../middlewares/Auth/zodValidaate'
+
 
 const router=Router();
 
 
-router.post('/admin/adduniversity',AuthorizeRoles(['ADMIN']),zodValidate(AddUniversitySchema),AddUniversity)
+router.post('/admin/adduniversity',AuthorizeRoles(['ADMIN']),zodValidate(AddUniversitySchema),AddUniversity);
+
+router.get('/admin/university',AuthorizeRoles(['ADMIN']),getUniversity)
 
 
 export default router

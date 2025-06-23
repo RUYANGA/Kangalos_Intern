@@ -40,3 +40,28 @@ export async function AddUniversity(req:Request<{},{},AddUniversityDto>,res:Resp
    }
     
 }
+
+
+export async function getUniversity(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+
+        const university=await prisma.university.findMany({
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                colleges:true
+            }
+        })
+
+        res.status(200).json({
+            message:'University get successfully!',
+            university:university
+        })
+        
+    } catch (error) {
+        
+    }
+
+}
