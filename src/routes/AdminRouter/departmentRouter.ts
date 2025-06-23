@@ -8,6 +8,8 @@ const router=Router();
 
 router.post('/admin/adddepartment',AuthorizeRoles([]),addDepepartment);
 
+router.get('/admin/department',AuthorizeRoles(['ADMIN']),getDepartment)
+
 
 
 export default router
