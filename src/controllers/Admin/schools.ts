@@ -11,7 +11,9 @@ export async function addSchool(
   next: NextFunction
 ): Promise<any> {
   try {
+
     const result= await AddSchoolSchema.safeParseAsync(req.body);
+    console.log(`error gene : ${result}`)
  
     if (!result.success) {
       return res.status(400).json({
@@ -76,7 +78,6 @@ export async function addSchool(
     console.error(error);
     return res.status(500).json({
       error: 'Error adding school',
-      details: error instanceof Error ? error.message : error,
     });
   }
 }
