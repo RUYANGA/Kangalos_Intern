@@ -51,6 +51,7 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
                 id:true,
                 name:true,
                 description:true,
+                location:true,
                 colleges:true
             }
         })
@@ -61,7 +62,10 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
         })
         
     } catch (error) {
-        
+        console.error(error);
+        return res.status(500).json({
+        error: 'Error get university',
+        });
     }
 
 }

@@ -90,7 +90,33 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
     error: "Internal server error",
     message: error.message || error,
   });
-}
+}}
 
 
+export async function getCollege(req:Request,res:Response,next:NextFunction):Promise<any>{
+    try {
+
+        const college=await prisma.college.findMany({
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                location:true,
+                schools:true,
+                director:true
+            }
+        })
+
+        res.status(200).json({
+            message:"College get successfully",
+            college:college
+        })
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+        error: 'Error adding school',
+        });
+
+    }
 }
