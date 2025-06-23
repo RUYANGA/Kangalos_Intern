@@ -3,6 +3,7 @@ import {AddCollege} from '../../types/dataTypes'
 import {prisma} from '../../prisma/prisma'
 import bcrypt from 'bcrypt'
 import {AddCollegeSchema,AddCollegeDto} from '../../middlewares/zod/college'
+import { error } from "console";
 
 
 
@@ -20,6 +21,18 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
         }
 
         const data: AddCollegeDto = result.data; 
+
+        const university= await prisma.university.findUnique({
+            where:{
+                id:universityId
+            }
+        })
+
+        if(!university){
+            return res.status(404).json({
+                error:"University not found"
+            })
+        }
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
 
