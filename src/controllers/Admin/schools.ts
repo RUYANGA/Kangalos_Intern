@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../prisma/prisma';
 import bcrypt from 'bcrypt';
 import { AddSchoolDto, AddSchoolSchema } from '../../middlewares/zod/school';
+import { error } from 'console';
 
 export async function addSchool(
   req: Request<{ id: string }, {}, AddSchoolDto>,
@@ -13,16 +14,11 @@ export async function addSchool(
     const result= await AddSchoolSchema.safeParseAsync(req.body);
  
     if (!result.success) {
-    const flattened = result.error.flatten();
-    const normalizedErrors = Object.fromEntries(
-        Object.entries(flattened.fieldErrors).map(([key, val]) => [key, val ?? []])
-    );
-    return res.status(400).json({ errors: normalizedErrors });
-    }
-
-
-
-
+      return res.status(400).json({
+        errors:result.error.format()
+      })
+    };
+    
     const data = result.data;
     const collegeId = req.params.id;
 
