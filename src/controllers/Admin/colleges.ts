@@ -111,6 +111,11 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
             }
         })
 
+        if (college.length === 0) {
+            return res.status(404).json({ message: "No colleges found for this university." });
+        }
+
+
         res.status(200).json({
             message:"College get successfully",
             college:college
