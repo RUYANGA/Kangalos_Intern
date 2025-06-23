@@ -1,5 +1,4 @@
 import { NextFunction, Request,Response } from "express";
-import {UniversityInput} from '../../types/dataTypes'
 import {prisma} from '../../prisma/prisma'
 import {AddUniversitySchema,AddUniversityDto} from '../../middlewares/zod/university'
 import { error } from "console";
