@@ -107,7 +107,17 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
                 description:true,
                 location:true,
                 schools:true,
-                director:true
+                director:{
+                    select:{
+                        id:true,
+                        firstName:true,
+                        lastName:true,
+                        email:true,
+                        phone:true,
+                        gender:true,
+                        role:true
+                    }
+                }
             }
         })
 

@@ -51,7 +51,14 @@ export async function getUniversity(req:Request,res:Response,next:NextFunction):
                 name:true,
                 description:true,
                 location:true,
-                colleges:true
+                colleges:{
+                    select:{
+                        id:true,
+                        name:true,
+                        description:true,
+                        location:true
+                    }
+                }
             }
         })
 
