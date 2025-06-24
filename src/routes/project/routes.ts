@@ -4,6 +4,7 @@ import {
   getAllProjects,
   getProjectById,
   getProjectsByUserId,
+  getProjectsByStatus
 } from '../../controllers/project/projectController';
 import { prisma } from '../../prisma/prisma';
 
@@ -16,6 +17,7 @@ router.post('/new', createProject);
 router.get('/all', getAllProjects);
 router.get('/get/:id', getProjectById);
 router.get('/get/by/user/:userId', getProjectsByUserId);
+router.get('/get/by/status/:status', getProjectsByStatus);
 
 
 

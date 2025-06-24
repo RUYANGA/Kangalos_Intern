@@ -132,3 +132,41 @@ export async function getProjectsByUserId(req: Request, res: Response): Promise<
     return res.status(500).json({ error: 'Failed to fetch projects' });
   }
 }
+// get all projects by status
+export async function getProjectsByStatus(req: Request, res: Response): Promise<any> {
+
+  try {
+    const { status } = req.params;
+    const normalizedStatus = status.toUpperCase() as keyof typeof PROJECTSTATUS;
+
+    if (!PROJECTSTATUS[normalizedStatus]) {
+      return res.status(400).json({ error: 'Invalid project status provided.' });
+    }
+
+    const statusValue = PROJECTSTATUS[normalizedStatus];
+
+    const [projects, count] = await Promise.all([
+      prisma.project.findMany({
+        where: { status: statusValue },
+        include: {
+          teamMembers: true,
+          tags: true,
+          fields: true,
+          sponsors: true,
+        },
+      }),
+      prisma.project.count({
+        where: { status: statusValue },
+      }),
+    ]);
+
+    return res.json({
+      status: statusValue,
+      count,
+      projects,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to retrieve projects by status' });
+  }
+};
