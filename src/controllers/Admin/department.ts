@@ -60,7 +60,8 @@ export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDt
                             }
                         },
                         role:'HOD',
-                        userType:'STAFF'
+                        userType:'STAFF',
+                        status:'ACTIVE'
                         
                     }
                 }
@@ -103,9 +104,7 @@ export async function getDepartment(req:Request,res:Response,next:NextFunction):
                             }
                         },
                         role:true,
-                        userType:true
-
-
+                        userType:true,
                     }
                 },
             }

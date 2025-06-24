@@ -60,7 +60,8 @@ export async function addSchool(
               },
             },
             role: 'DEAN',
-            userType:'STAFF'
+            userType:'STAFF',
+            status:'ACTIVE'
           },
         },
       },

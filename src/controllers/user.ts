@@ -5,10 +5,13 @@ import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
 import {sendEmail,forgetPassword1} from'../util/nodemailer'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { ResendOtpInput,FogetEmail} from '../types/dataTypes'
+
 import { VerifyOtpZ,VerifyOtpDto} from '../middlewares/zod/verifyOtp'
 import { LoginDto, LoginZ } from '../middlewares/zod/userLogin'
 import { SignUpDto, SignUpZ } from '../middlewares/zod/userRegister'
+import { ResendOtpDto,ResendOtpZ } from '../middlewares/zod/resendOtp'
+import { forgetPasswordDto, forgetPasswordSchem} from '../middlewares/zod/forgetPassword'
+import {resetPasswordDto,resetPasswordSchem} from '../middlewares/zod/resetPassword'
 
 
 
@@ -31,12 +34,6 @@ export async function Register(req:Request<{},{},SignUpDto>,res:Response,next:Ne
         }
 
         const data:SignUpDto=result.data
-
-        // const parsedDate = new Date(data.dateOfBirth);
-
-        // if (isNaN(parsedDate.getTime())) {
-        // return res.status(400).json({ error: "Invalid date format" });
-        // }
     
         const otp:string= await crypto.randomInt(111111,999999).toString();
         const expiredOtp=addMinutes(new Date(),15)
@@ -76,14 +73,22 @@ export async function Register(req:Request<{},{},SignUpDto>,res:Response,next:Ne
 };
 
 
-export async function resendOtp(req:Request<{},{},ResendOtpInput>,res:Response,next:NextFunction):Promise<any>{
+export async function resendOtp(req:Request<{},{},ResendOtpDto>,res:Response,next:NextFunction):Promise<any>{
    try {
 
         
-        const {email}=req.body
+        const result= await ResendOtpZ.safeParseAsync(req.body);
+
+        if(!result.success){
+            return res.status(400).json({
+                errors:result.error.format()
+            })
+        }
+
+        const data:ResendOtpDto=result.data
 
         const user =await prisma.user.findUnique({
-            where:{email:email}
+            where:{email:data.email}
         })
 
         if(!user)return res.status(404).json({Error:'User not found'})
@@ -99,7 +104,7 @@ export async function resendOtp(req:Request<{},{},ResendOtpInput>,res:Response,n
             }
         })
 
-        sendEmail(email,otp,user.firstName)//Send otp to email
+        sendEmail(user.email,otp,user.firstName)//Send otp to email
         
         res.status(200).json({Message:'Email resend successfuly, check on your email!'})
 
@@ -148,7 +153,9 @@ export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,nex
         await prisma.user.update({
             where:{id:user?.id},
             data:{
-                status:'ACTIVE'
+                status:'ACTIVE',
+                userType:'NORMAL',           
+                
             }
         });
 
@@ -215,14 +222,22 @@ export async function Login(req:Request<{},{},LoginDto>,res:Response,next:NextFu
 
 };
 
-export async function forgetPassword(req:Request<{},{},FogetEmail>,res:Response,next:NextFunction):Promise<any>{
+export async function forgetPassword(req:Request<{},{},forgetPasswordDto>,res:Response,next:NextFunction):Promise<any>{
 
    try {
 
-    const {email}=req.body;
+    const result=await forgetPasswordSchem.safeParseAsync(req.body);
+
+    if(!result.success){
+        return res.status(400).json({
+            errors:result.error.format()
+        })
+    }
+
+    const data:forgetPasswordDto=result.data
 
     const user=await prisma.user.findUnique({
-        where:{email:email}
+        where:{email:data.email}
     });
 
     if(!user)return res.status(404).json({Error:'User with email not found'})
@@ -239,7 +254,7 @@ export async function forgetPassword(req:Request<{},{},FogetEmail>,res:Response,
 
     forgetPassword1(user.email,token,user?.firstName)
 
-    res.status(200).json({Message:`Rest password link sent to ${email}`,token:token})
+    res.status(200).json({Message:`Rest password link sent to ${user.email}`,token:token})
 
    } catch (error) {
 
@@ -248,22 +263,28 @@ export async function forgetPassword(req:Request<{},{},FogetEmail>,res:Response,
    }
 };
 
- type Password={
-            password:string
-        };
 
-export async function resetPassword(req:Request<{},{},Password>,res:Response,next:NextFunction):Promise<any>{
+export async function resetPassword(req:Request<{},{},resetPasswordDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
        
-        const{password}=req.body;
+        const result =await resetPasswordSchem.safeParseAsync(req.body);
+
+        if(!result.success){
+            return res.status(400).json({
+                error:result.error.format()
+            })
+        }
+
+        const data:resetPasswordDto=result.data;
 
         const authHeader=req.headers['authorization'];
         const token=authHeader?.split(" ")[1];
 
         if(!token)return res.status(400).json({Message:'Token not provided'});
 
-        const hashPassword=await bcrypt.hash(password,12);
+        const hashPassword=await bcrypt.hash(data.password
+            ,12);
 
         const decoded=jwt.verify(token,tokenkey) as {id:string} ;
 

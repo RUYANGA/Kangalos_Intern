@@ -13,6 +13,7 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
         const universityId=req.params.id
 
         const result = await AddCollegeSchema.safeParseAsync(req.body);
+        
         if (!result.success) {
         return res.status(400).json({
             errors: result.error.format(),
@@ -60,7 +61,9 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
                             }
                         },
                         role:'PRINCIPAL',
-                        userType:'STAFF'
+                        userType:'STAFF',
+                        status:'ACTIVE'
+
 
                     }
                 }
@@ -144,5 +147,60 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
         error: 'Error get school',
         });
 
+    }
+};
+
+export async function updateCollege(req:Request<{id:string},{},AddCollegeDto>,res:Response,next:NextFunction
+
+):Promise<any>{
+    try {
+
+        const collegeId=req.params.id;
+
+        const result= await AddCollegeSchema.safeParseAsync(req.body);
+
+        if(!result.success){
+            return res.status(400).json({
+                errors:result.error.format()
+            })
+        }
+
+        const data:AddCollegeDto=result.data;
+
+        const hashedPassword=await bcrypt.hash(data.password,12)
+
+        const college=await prisma.college.update({
+            where:{
+                id:collegeId
+            },
+            data:{
+                name:data.name,
+                description:data.description,
+                location:data.location,
+                director:{
+                    update:{
+                        firstName:data.firstName,
+                        lastName:data.lastName,
+                        email:data.email,
+                        phone:data.phone,
+                        gender:data.gender,
+                        dateOfBirth:data.dateOfBirth,
+                        password:hashedPassword,
+                        staffProfile:{
+                            update:{
+                                jobTitle:data.jobTitle
+                            }
+                        }
+                        
+                    }
+                }
+            },
+            include:{
+                university:true,
+                director:true
+            }
+        })        
+    } catch (error) {
+        
     }
 }
