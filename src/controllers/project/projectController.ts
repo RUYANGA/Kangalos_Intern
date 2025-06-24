@@ -1,6 +1,7 @@
 import {Request,Response} from 'express'
 import { prisma } from '../../prisma/prisma';
 import { PROJECTSTATUS } from '@prisma/client';
+import { ZodSchema } from 'zod';
 
 
 export async function getAllProjects(req:Request,res:Response):Promise<any>{
