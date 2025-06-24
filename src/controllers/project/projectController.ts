@@ -1,5 +1,7 @@
 import {Request,Response} from 'express'
 import { prisma } from '../../prisma/prisma';
+import { PROJECTSTATUS } from '@prisma/client';
+
 
 export async function getAllProjects(req:Request,res:Response):Promise<any>{
   try {
@@ -103,4 +105,30 @@ export async function getProjectById(req:Request,res:Response):Promise<any>{
   }
 }
 
+// get all projects by user id
+export async function getProjectsByUserId(req: Request, res: Response): Promise<any> {
+  const { userId } = req.params;
 
+  try {
+    const projects = await prisma.project.findMany({
+      where: {
+        teamMembers: {
+          some: {
+            userId,
+          },
+        },
+      },
+      include: {
+        teamMembers: true,
+        tags: true,
+        fields: true,
+        sponsors: true,
+      },
+    });
+
+    return res.status(200).json(projects);
+  } catch (error) {
+    console.error('Error fetching projects by user ID:', error);
+    return res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+}
