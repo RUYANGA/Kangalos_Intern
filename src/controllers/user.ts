@@ -1,5 +1,4 @@
 import {Request,Response,NextFunction} from 'express'
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import {addMinutes} from 'date-fns'
@@ -12,10 +11,12 @@ import { SignUpDto, SignUpZ } from '../middlewares/zod/userRegister'
 import { ResendOtpDto,ResendOtpZ } from '../middlewares/zod/resendOtp'
 import { forgetPasswordDto, forgetPasswordSchem} from '../middlewares/zod/forgetPassword'
 import {resetPasswordDto,resetPasswordSchem} from '../middlewares/zod/resetPassword'
+import {prisma} from '../prisma/prisma'
 
 
 
-const prisma=new PrismaClient()
+
+
 const JWT_KEY=process.env.JWTKEY || 'jkdsdfguyi90uy7tryfdfchvbhjuhigy' as string
 const tokenkey=process.env.TOKEN_KEY || 'oiuytrdfghjkopiuygyf' as string;
 
@@ -49,6 +50,7 @@ export async function Register(req:Request<{},{},SignUpDto>,res:Response,next:Ne
                 password:hashPassword,
                 phone:data.phone,
                 gender:data.gender,
+                
 
             }
         })
@@ -151,13 +153,13 @@ export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,nex
         }
 
         await prisma.user.update({
-            where:{id:user?.id},
-            data:{
-                status:'ACTIVE',
-                role:'ADMIN'        
-                
-            }
+        where: { id: user!.id },
+        data: {
+            status: "ACTIVE",
+            role:"NORMAL"
+        }
         });
+
 
         await prisma.otp.delete({
             where:{userId:user?.id}

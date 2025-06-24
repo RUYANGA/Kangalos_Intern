@@ -78,6 +78,27 @@ model Program {
   @@index([departmentId])
 }
 
+enum USER_TYPE {
+  NORMAL
+  STUDENT
+  STAFF
+}
+
+enum ROLES {
+  ADMIN
+  PRINCIPAL
+  DEAN
+  HOD
+  MENTOR
+  STUDENT
+  NORMAL
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id              String        @id @default(uuid())
   firstName       String
@@ -205,27 +226,6 @@ model ProjectSponsor {
   sponsor   Sponsor @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
 
   @@id([projectId, sponsorId])
-}
-
-enum USER_TYPE {
-  NORMAL
-  STUDENT
-  STAFF
-}
-
-enum ROLES {
-  ADMIN
-  PRINCIPAL
-  DEAN
-  HOD
-  MENTOR
-  STUDENT
-  NORMAL
-}
-
-enum STATUS {
-  ACTIVE
-  INACTIVE
 }
 
 enum PROJECTSTATUS {
