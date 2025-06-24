@@ -99,7 +99,7 @@ export async function getSchool(req:Request,res:Response,next:NextFunction):Prom
       }
     });
 
-    if(!school){
+    if(school.length===0){
       return res.status(404).json({
         message: "No school found for this college."
       })
