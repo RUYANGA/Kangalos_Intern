@@ -1,16 +1,19 @@
+import 'dotenv/config';
+
 import nodemailer from 'nodemailer';
 
 
-// Create the transporter object (reusable in multiple functions)
+
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',  // Example for Gmail SMTP
-    port: 587,  // Or use 465 for SSL
-    secure: false,  // Set to true if using port 465
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL,  // Your email address
       pass: process.env.EMAIL_PASS,  // Your email password or App password
     },
   });
+
 
   export const sendEmail = async (to: string,  otp:string,user:string) => {
     const year=new Date().getFullYear()
@@ -18,7 +21,7 @@ const transporter = nodemailer.createTransport({
       from:'EASY SHOP',
       to,
       subject:'VERIFY OTP CODE',
-      html:` 
+      html:` z
       <!DOCTYPE html>
       <html lang="en">
       <head>

@@ -62,8 +62,9 @@ export async function Register(req:Request<{},{},SignUpDto>,res:Response,next:Ne
             userId:user.id
            }
         })
-    
-        sendEmail(user.email,otp,user.firstName)//Send otp to email
+
+       
+        sendEmail(data.email,otp,user.firstName)//Send otp to email
     
         res.status(201).json({Message:`User registered verify otp send to ${data.email} `})
         
@@ -156,6 +157,7 @@ export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,nex
         where: { id: user!.id },
         data: {
             status: "ACTIVE",
+            role:'NORMAL'
         }
         });
 
