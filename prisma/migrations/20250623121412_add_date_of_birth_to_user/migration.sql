@@ -44,7 +44,6 @@ CREATE TABLE "School" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "location" TEXT NOT NULL,
     "collegeId" TEXT NOT NULL,
     "deanId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -87,6 +86,7 @@ CREATE TABLE "User" (
     "gender" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "dateOfBirth" TIMESTAMP(3) NOT NULL,
     "userType" "USER_TYPE" NOT NULL DEFAULT 'NORMAL',
     "role" "ROLES" NOT NULL DEFAULT 'STUDENT',
     "status" "STATUS" NOT NULL DEFAULT 'INACTIVE',
@@ -111,7 +111,6 @@ CREATE TABLE "Student" (
 CREATE TABLE "Staff" (
     "userId" TEXT NOT NULL,
     "jobTitle" TEXT,
-    "hireDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

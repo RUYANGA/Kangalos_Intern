@@ -11,7 +11,7 @@ import collegeRoutes from './routes/AdminRouter/collegeRouter'
 import schoolRouter from './routes/AdminRouter/schoolRouter'
 
 
-const port=process.env.PORT||2000
+const port=process.env.PORT||1000
 
 
 
@@ -34,9 +34,15 @@ app.use(schoolRouter)
 
 
 
+app.get('/', (req:Request, res:Response) => {
+  res.send('Kangalos backend is running ✅');
+});
+
+
 app.use((error:any,req:Request,res:Response,next:NextFunction):void=>{
-    res.status(500).json({Error: 'Something went wronge, Try again'})
     console.log(error.message)
+    res.status(500).json({Error: 'Something went wronge, Try again'})
+    
     return
 })
 

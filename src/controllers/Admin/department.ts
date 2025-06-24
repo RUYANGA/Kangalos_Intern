@@ -4,7 +4,7 @@ import { prisma } from "../../prisma/prisma";
 import bcrypt from 'bcrypt'
 
 
-export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto>,res:Response,next:NextFunction){
+export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDto>,res:Response,next:NextFunction):Promise<any>{
 
     try {
 
@@ -59,7 +59,8 @@ export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto
                                 jobTitle:data.jobTitle
                             }
                         },
-                        role:'HOD'
+                        role:'HOD',
+                        userType:'STAFF'
                         
                     }
                 }
@@ -76,4 +77,48 @@ export async function addDpepartment(req:Request<{id:string},{},AddDepartmentDto
         console.log(error)
         res.status(500).json({Error:"Error to add department",error})
     }
+}
+
+export async function getDepartment(req:Request,res:Response,next:NextFunction):Promise<any>{
+
+    try {
+
+        const department=await prisma.department.findMany({
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                programs:true,
+                hod:{
+                    select:{
+                        id:true,
+                        firstName:true,
+                        lastName:true,
+                        email:true,
+                        phone:true,
+                        gender:true,
+                        staffProfile:{
+                            select:{
+                                jobTitle:true
+                            }
+                        },
+                        role:true,
+                        userType:true
+
+
+                    }
+                },
+            }
+        });
+
+        res.status(200).json({
+            message:'Department get successfully',
+            department:department
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({Error:"Error to get department",error})
+    }
+
 }
