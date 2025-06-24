@@ -59,7 +59,8 @@ export async function AddCollege(req:Request<{id:string},{},AddCollegeDto>,res:R
                                 jobTitle:data.jobTitle
                             }
                         },
-                        role:'PRINCIPAL'
+                        role:'PRINCIPAL',
+                        userType:'STAFF'
 
                     }
                 }
@@ -115,7 +116,13 @@ export async function getCollege(req:Request,res:Response,next:NextFunction):Pro
                         email:true,
                         phone:true,
                         gender:true,
-                        role:true
+                        staffProfile:{
+                            select:{
+                                jobTitle:true
+                            }
+                        },
+                        role:true,
+                        userType:true
                     }
                 }
             }

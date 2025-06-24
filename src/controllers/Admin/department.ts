@@ -59,7 +59,8 @@ export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDt
                                 jobTitle:data.jobTitle
                             }
                         },
-                        role:'HOD'
+                        role:'HOD',
+                        userType:'STAFF'
                         
                     }
                 }
@@ -88,7 +89,25 @@ export async function getDepartment(req:Request,res:Response,next:NextFunction):
                 name:true,
                 description:true,
                 programs:true,
-                hod:true,
+                hod:{
+                    select:{
+                        id:true,
+                        firstName:true,
+                        lastName:true,
+                        email:true,
+                        phone:true,
+                        gender:true,
+                        staffProfile:{
+                            select:{
+                                jobTitle:true
+                            }
+                        },
+                        role:true,
+                        userType:true
+
+
+                    }
+                },
             }
         });
 

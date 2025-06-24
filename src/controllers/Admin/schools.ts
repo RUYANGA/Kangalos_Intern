@@ -60,6 +60,7 @@ export async function addSchool(
               },
             },
             role: 'DEAN',
+            userType:'STAFF'
           },
         },
       },
@@ -104,7 +105,13 @@ export async function getSchool(req:Request,res:Response,next:NextFunction):Prom
             email:true,
             phone:true,
             gender:true,
-            role:true
+            staffProfile:{
+              select:{
+                jobTitle:true
+              }
+            },
+            role:true,
+            userType:true
           }
         }
       }
