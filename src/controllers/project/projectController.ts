@@ -19,6 +19,7 @@ export async function getAllProjects(req:Request,res:Response):Promise<any>{
   }
 };
 
+// create a new project
 export async function createProject(req:Request,res:Response):Promise<any>{
   try {
     const {
@@ -75,5 +76,31 @@ export async function createProject(req:Request,res:Response):Promise<any>{
     return res.status(500).json({ error: 'Failed to create project' });
   }
 };
+
+// get a project by id
+export async function getProjectById(req:Request,res:Response):Promise<any>{
+  const { id } = req.params;
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id },
+      include: {
+        teamMembers: true,
+        tags: true,
+        fields: true,
+        sponsors: true,
+      },
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    return res.status(200).json(project);
+  } catch (error) {
+    console.error('Error fetching project:', error);
+    return res.status(500).json({ error: 'Failed to fetch project' });
+  }
+}
 
 

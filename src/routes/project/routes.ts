@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createProject } from '../../controllers/project/projectController'; 
-import {getAllProjects } from '../../controllers/project/projectController';
+import {getAllProjects,getProjectById } from '../../controllers/project/projectController';
 import { prisma } from '../../prisma/prisma';
 
 
@@ -10,6 +10,7 @@ const router = Router();
 
 router.post('/new', createProject);
 router.get('/all', getAllProjects);
+router.get('/get/:id', getProjectById);
 
 // 👹 this is a temporary API to get users
 router.get('/all-users', async (_req, res) => {
