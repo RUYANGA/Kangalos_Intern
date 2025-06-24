@@ -95,7 +95,18 @@ export async function getSchool(req:Request,res:Response,next:NextFunction):Prom
         id:true,
         name:true,
         description:true,
-        dean:true
+        dean:{
+          select:{
+            id:true,
+            firstName:true,
+            lastName:true,
+            dateOfBirth:true,
+            email:true,
+            phone:true,
+            gender:true,
+            role:true
+          }
+        }
       }
     });
 
