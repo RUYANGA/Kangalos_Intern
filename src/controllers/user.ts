@@ -154,7 +154,7 @@ export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,nex
             where:{id:user?.id},
             data:{
                 status:'ACTIVE',
-                userType:'NORMAL',           
+                role:'ADMIN'        
                 
             }
         });

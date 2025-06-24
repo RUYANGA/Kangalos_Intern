@@ -8,16 +8,14 @@ datasource db {
   relationMode = "foreignKeys"
 }
 
-//Core reference tables (3‑NF compliant)
-
 model University {
   id          String    @id @default(uuid())
   name        String    @unique
   description String
   location    String
-  colleges    College[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  colleges    College[]
 }
 
 model College {
@@ -29,41 +27,38 @@ model College {
   directorId   String?    @unique
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-
-  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
   director     User?      @relation("DirectorCollege", fields: [directorId], references: [id])
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
   schools      School[]
 
   @@index([universityId])
 }
 
 model School {
-  id          String     @id @default(uuid())
-  name        String     @unique
+  id          String       @id @default(uuid())
+  name        String       @unique
   description String
   collegeId   String
-  deanId      String?    @unique
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-
-  college     College    @relation(fields: [collegeId], references: [id], onDelete: Cascade)
-  dean        User?      @relation("DeanSchool", fields: [deanId], references: [id])
+  deanId      String?      @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   departments Department[]
+  college     College      @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  dean        User?        @relation("DeanSchool", fields: [deanId], references: [id])
 
   @@index([collegeId])
 }
 
 model Department {
-  id          String     @id @default(uuid())
-  name        String     @unique
+  id          String    @id @default(uuid())
+  name        String    @unique
   description String
   schoolId    String
-  hodId       String?    @unique
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-
-  school      School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  hod         User?      @relation("HodDepartment", fields: [hodId], references: [id])
+  hodId       String?   @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  hod         User?     @relation("HodDepartment", fields: [hodId], references: [id])
+  school      School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   programs    Program[]
 
   @@index([schoolId])
@@ -76,7 +71,6 @@ model Program {
   departmentId String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   students     Student[]  @relation("StudentProgram")
 
@@ -84,52 +78,27 @@ model Program {
   @@index([departmentId])
 }
 
-//User hierarchy: base + profile extensions
-
-enum USER_TYPE {
-  NORMAL
-  STUDENT
-  STAFF
-}
-
-enum ROLES {
-  NORMAL
-  ADMIN
-  PRINCIPAL
-  DEAN
-  HOD
-  MENTOR
-  STUDENT
-}
-
-enum STATUS {
-  ACTIVE
-  INACTIVE
-}
-
 model User {
-  id               String       @id @default(uuid())
-  firstName        String
-  lastName         String
-  email            String       @unique
-  gender           String
-  phone            String
-  password         String
-  dateOfBirth      DateTime
-  userType         USER_TYPE    @default(NORMAL)
-  role             ROLES        @default(NORMAL)
-  status           STATUS       @default(INACTIVE)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-
-  studentProfile   Student?
-  staffProfile     Staff?
-
-  directorCollege  College?     @relation("DirectorCollege")
-  deanSchool       School?      @relation("DeanSchool")
-  hodDepartment    Department?  @relation("HodDepartment")
-  otp              Otp?
-  projectTeams     ProjectTeam[]
+  id              String        @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String        @unique
+  gender          String
+  phone           String
+  password        String
+  dateOfBirth     DateTime
+  userType        USER_TYPE     @default(NORMAL)
+  role            ROLES         @default(NORMAL)
+  status          STATUS        @default(INACTIVE)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  directorCollege College?      @relation("DirectorCollege")
+  hodDepartment   Department?   @relation("HodDepartment")
+  otp             Otp?
+  projectTeams    ProjectTeam[]
+  deanSchool      School?       @relation("DeanSchool")
+  staffProfile    Staff?
+  studentProfile  Student?
 
   @@index([email])
   @@index([role])
@@ -138,14 +107,13 @@ model User {
 }
 
 model Student {
-  userId     String   @id
-  regNo      BigInt   @unique
-  programId  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  program    Program? @relation("StudentProgram", fields: [programId], references: [id])
+  userId    String   @id
+  regNo     BigInt   @unique
+  programId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  program   Program? @relation("StudentProgram", fields: [programId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([programId])
 }
@@ -155,7 +123,6 @@ model Staff {
   jobTitle  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -165,11 +132,101 @@ model Otp {
   userId      String   @unique
   createdAt   DateTime @default(now())
   expiredDate DateTime
-
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-//Project domain
+model Project {
+  id            String           @id @default(uuid())
+  title         String
+  description   String
+  initiatedFrom String
+  beneficialist String
+  status        PROJECTSTATUS    @default(NOT_SUBMITTED)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  fields        ProjectField[]
+  sponsors      ProjectSponsor[]
+  tags          ProjectTag[]
+  teamMembers   ProjectTeam[]
+}
+
+model ProjectTeam {
+  projectId String
+  userId    String
+  roleTeam  ROLETEAM @default(MEMBER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, userId])
+}
+
+model Tag {
+  id       String       @id @default(uuid())
+  name     String       @unique
+  projects ProjectTag[]
+}
+
+model Field {
+  id       String         @id @default(uuid())
+  name     String         @unique
+  projects ProjectField[]
+}
+
+model Sponsor {
+  id       String           @id @default(uuid())
+  name     String           @unique
+  projects ProjectSponsor[]
+}
+
+model ProjectTag {
+  projectId String
+  tagId     String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, tagId])
+}
+
+model ProjectField {
+  projectId String
+  fieldId   String
+  field     Field   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, fieldId])
+}
+
+model ProjectSponsor {
+  projectId String
+  sponsorId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sponsor   Sponsor @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, sponsorId])
+}
+
+enum USER_TYPE {
+  NORMAL
+  STUDENT
+  STAFF
+}
+
+enum ROLES {
+  ADMIN
+  PRINCIPAL
+  DEAN
+  HOD
+  MENTOR
+  STUDENT
+  NORMAL
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
+}
 
 enum PROJECTSTATUS {
   NOT_SUBMITTED
@@ -182,81 +239,4 @@ enum ROLETEAM {
   MEMBER
   TEAM_LEADER
   MENTOR
-}
-
-model Project {
-  id            String          @id @default(uuid())
-  title         String
-  description   String
-  initiatedFrom String
-  beneficialist String
-  status        PROJECTSTATUS   @default(NOT_SUBMITTED)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-
-  tags          ProjectTag[]
-  fields        ProjectField[]
-  sponsors      ProjectSponsor[]
-  teamMembers   ProjectTeam[]
-}
-
-model ProjectTeam {
-  projectId  String
-  userId     String
-  roleTeam   ROLETEAM        @default(MEMBER)
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-
-  project    Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, userId])
-}
-
-model Tag {
-  id        String      @id @default(uuid())
-  name      String      @unique
-  projects  ProjectTag[]
-}
-
-model Field {
-  id        String      @id @default(uuid())
-  name      String      @unique
-  projects  ProjectField[]
-}
-
-model Sponsor {
-  id        String      @id @default(uuid())
-  name      String      @unique
-  projects  ProjectSponsor[]
-}
-
-model ProjectTag {
-  projectId String
-  tagId     String
-
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, tagId])
-}
-
-model ProjectField {
-  projectId String
-  fieldId   String
-
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  field     Field   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, fieldId])
-}
-
-model ProjectSponsor {
-  projectId String
-  sponsorId String
-
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  sponsor   Sponsor  @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, sponsorId])
 }
