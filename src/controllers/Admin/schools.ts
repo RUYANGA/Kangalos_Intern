@@ -85,7 +85,12 @@ export async function addSchool(
 export async function getSchool(req:Request,res:Response,next:NextFunction):Promise<any>{
   try {
 
+    const collegeId=req.params.id
+
     const school=await prisma.school.findMany({
+      where:{
+        collegeId:collegeId
+      },
       select:{
         id:true,
         name:true,
@@ -93,6 +98,12 @@ export async function getSchool(req:Request,res:Response,next:NextFunction):Prom
         dean:true
       }
     });
+
+    if(!school){
+      return res.status(404).json({
+        message: "No school found for this college."
+      })
+    }
 
     res.status(200).json({
       message:'School get successfully',
