@@ -9,6 +9,7 @@ import userRoutes from '../src/routes/UserRoutes'
 import universityRoutes from './routes/AdminRouter/universityRouter'
 import collegeRoutes from './routes/AdminRouter/collegeRouter'
 import schoolRouter from './routes/AdminRouter/schoolRouter'
+import projectRoutes from './routes/project/routes';
 
 
 const port=process.env.PORT||1000
@@ -31,6 +32,9 @@ app.use(userRoutes)
 app.use(universityRoutes)
 app.use(collegeRoutes)
 app.use(schoolRouter)
+app.use('/api/projects', projectRoutes);
+
+
 
 
 

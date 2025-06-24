@@ -1,0 +1,79 @@
+import {Request,Response} from 'express'
+import { prisma } from '../../prisma/prisma';
+
+export async function getAllProjects(req:Request,res:Response):Promise<any>{
+  try {
+    const projects = await prisma.project.findMany({
+      include: {
+        teamMembers: true,
+        tags: true,
+        fields: true,
+        sponsors: true,
+      },
+    });
+
+    return res.status(200).json(projects);
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    return res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+};
+
+export async function createProject(req:Request,res:Response):Promise<any>{
+  try {
+    const {
+      title,
+      description,
+      initiatedFrom,
+      beneficialist,
+      userId,
+      tagIds = [],
+      fieldIds = [],
+      sponsorIds = [],
+    } = req.body;
+
+    const project = await prisma.project.create({
+      data: {
+        title,
+        description,
+        initiatedFrom,
+        beneficialist,
+        status: 'NOT_SUBMITTED',
+        teamMembers: {
+          create: {
+            userId,
+            roleTeam: 'TEAM_LEADER',
+          },
+        },
+        tags: {
+          create: tagIds.map((tagId: string) => ({
+            tag: { connect: { id: tagId } },
+          })),
+        },
+        fields: {
+          create: fieldIds.map((fieldId: string) => ({
+            field: { connect: { id: fieldId } },
+          })),
+        },
+        sponsors: {
+          create: sponsorIds.map((sponsorId: string) => ({
+            sponsor: { connect: { id: sponsorId } },
+          })),
+        },
+      },
+      include: {
+        teamMembers: true,
+        tags: true,
+        fields: true,
+        sponsors: true,
+      },
+    });
+
+    return res.status(201).json(project);
+  } catch (error) {
+    console.error('Error creating project:', error);
+    return res.status(500).json({ error: 'Failed to create project' });
+  }
+};
+
+
