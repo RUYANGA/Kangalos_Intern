@@ -8,7 +8,7 @@ const router=Router();
 
 router.post('/admin/adddepartment/:id',AuthorizeRoles(['ADMIN']),addDepepartment);
 
-router.get('/admin/department/:id',AuthorizeRoles(['ADMIN']),getDepartment)
+router.get('/admin/department/:id',AuthorizeRoles(['ADMIN','PRINCIPAL','DEAN','HOD']),getDepartment)
 
 
 
