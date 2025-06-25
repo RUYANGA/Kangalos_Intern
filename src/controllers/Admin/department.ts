@@ -20,10 +20,6 @@ export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDt
 
         const schoolId=req.params.id;
 
-        if(!schoolId){
-            throw new Error('School id required!');
-        }
-
         const school=await prisma.school.findUnique({
             where:{
                 id:schoolId
@@ -31,7 +27,7 @@ export async function addDepepartment(req:Request<{id:string},{},AddDepartmentDt
         })
 
         if(!school){
-            throw new Error('School to add department not found')
+            return res.status(404).json('School to add department not found')
         }
 
         const hashedPassword=await bcrypt.hash(data.password,12);
@@ -84,7 +80,12 @@ export async function getDepartment(req:Request,res:Response,next:NextFunction):
 
     try {
 
+        const schoolId=req.params.id;
+
         const department=await prisma.department.findMany({
+            where:{
+                schoolId:schoolId
+            },
             select:{
                 id:true,
                 name:true,

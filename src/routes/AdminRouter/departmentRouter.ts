@@ -6,9 +6,9 @@ import {AuthorizeRoles} from '../../middlewares/Auth/TokenVerify'
 const router=Router();
 
 
-router.post('/admin/adddepartment',AuthorizeRoles([]),addDepepartment);
+router.post('/admin/adddepartment/:id',AuthorizeRoles(['ADMIN']),addDepepartment);
 
-router.get('/admin/department',AuthorizeRoles(['ADMIN']),getDepartment)
+router.get('/admin/department/:id',AuthorizeRoles(['ADMIN']),getDepartment)
 
 
 

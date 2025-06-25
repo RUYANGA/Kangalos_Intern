@@ -1,7 +1,6 @@
 import { NextFunction, Request,Response } from "express";
 import {prisma} from '../../prisma/prisma'
 import {AddUniversitySchema,AddUniversityDto} from '../../middlewares/zod/university'
-import { error } from "console";
 
 
 
