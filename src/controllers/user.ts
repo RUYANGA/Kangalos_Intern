@@ -118,64 +118,64 @@ export async function resendOtp(req:Request<{},{},ResendOtpDto>,res:Response,nex
    }
 };
 
-export async function verifyOtp(req:Request<{},{},VerifyOtpDto>,res:Response,next:NextFunction):Promise<any>{
+export async function verifyOtp(
+  req: Request<{}, {}, VerifyOtpDto>,
+  res: Response,
+  next: NextFunction
+): Promise<any> {
+  try {
+    // 1. Validate input
+    const result = await VerifyOtpZ.safeParseAsync(req.body);
+    if (!result.success) {
+      return res.status(400).json({ error: result.error.format() });
+    }
 
-   try {
+    const { email, otp } = result.data;
 
-        const result= await VerifyOtpZ.safeParseAsync(req.body);
-
-        if(!result.success){
-            return res.status(400).json({
-                error:result.error.format()
-            })
-        }
-
-        const data:VerifyOtpDto=result.data
-
-        console.log(data.otp)
-
-        const user=await prisma.user.findUnique({
-            where:{email:data.email}
-        })
-
-        const foundOtp=await prisma.otp.findUnique({
-            where:{userId:user?.id}
-        });
-
-        if(!foundOtp)return res.status(404).json('Otp not found')
-
-        if (String(foundOtp.code) !== data.otp.trim()) {
-          return res.status(401).json({ error: 'Invalid Otp' });
-        
-        }else if(foundOtp.expiredDate < new Date()){
-
-            return res.status(404).json('Otp expired date')
-
-        }
-
-        await prisma.user.update({
-        where: { id: user!.id },
-        data: {
-            status: "ACTIVE",
-            role:'NORMAL'
-        }
-        });
-
-
-        await prisma.otp.delete({
-            where:{userId:user?.id}
-        });
-
-        res.status(200).json({Message:'Email verify successfuly, now you can login'});
-
-   } catch (error) {
+    // 2. Find the user
+    const user = await prisma.user.findUnique({ where: { email } });
     
-        //console.log(error)
-        return res.status(500).json({Error:'Error to verify otp '})
-   }
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
+    // 3. Find OTP
+    const foundOtp = await prisma.otp.findUnique({
+      where: { userId: user.id }
+    });
+
+    if (!foundOtp) {
+      return res.status(404).json({ error: 'OTP not found' });
+    }
+
+    // 4. Check OTP match
+    if (String(foundOtp.code) !== otp.trim()) {
+      return res.status(401).json({ error: 'Invalid OTP' });
+    }
+
+    // 5. Check expiry
+    if (foundOtp.expiredDate < new Date()) {
+      return res.status(403).json({ error: 'OTP has expired' });
+    }
+
+    // 6. Update user status
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        status: 'ACTIVE',
+        role: 'NORMAL',
+      },
+    });
+
+    // 7. Remove OTP
+    await prisma.otp.delete({ where: { userId: user.id } });
+
+    return res.status(200).json({ message: 'Email verified successfully. You can now log in.' });
+  } catch (error) {
+    console.error('❌ OTP verification failed:', error);
+    return res.status(500).json({ error: 'Error verifying OTP. Try again later.' });
+  }
 }
-
 
 export async function Login(req:Request<{},{},LoginDto>,res:Response,next:NextFunction):Promise<any>{
 
