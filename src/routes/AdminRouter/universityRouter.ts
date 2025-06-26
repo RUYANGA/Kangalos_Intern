@@ -10,7 +10,7 @@ const router=Router();
 
 router.post('/admin/adduniversity',AuthorizeRoles(['ADMIN']),zodValidate(AddUniversitySchema),AddUniversity);
 
-router.get('/admin/university',AuthorizeRoles(['ADMIN']),getUniversity)
+router.get('/admin/university',AuthorizeRoles(['ADMIN','PRINCIPAL','DEAN','HOD']),getUniversity)
 
 
 export default router
