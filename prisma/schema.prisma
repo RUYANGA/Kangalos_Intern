@@ -129,7 +129,7 @@ model User {
 
 model Student {
   userId    String   @id
-  regNo     BigInt   @unique
+  regNo     String   @unique
   programId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

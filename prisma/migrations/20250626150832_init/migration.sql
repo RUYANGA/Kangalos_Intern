@@ -99,7 +99,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Student" (
     "userId" TEXT NOT NULL,
-    "regNo" BIGINT NOT NULL,
+    "regNo" TEXT NOT NULL,
     "programId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

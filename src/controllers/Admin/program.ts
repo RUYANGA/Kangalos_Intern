@@ -1,7 +1,7 @@
 import { NextFunction, Request,Response } from "express";
 import {prisma} from '../../prisma/prisma'
 import {AddProgramSchema,AddProgramDto } from '../../middlewares/zod/program'
-import { error } from "console";
+
 
 
 export async function AddProgram(req:Request<{id:string},{},AddProgramDto>,res:Response,next:NextFunction):Promise<any>{
